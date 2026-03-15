@@ -200,19 +200,13 @@ function App() {
               <button style={{ padding: 7, borderRadius: 10, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
                 <Bell size={18} style={{ color: 'var(--text-secondary)' }} />
               </button>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', borderRadius: 12, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)' }}>
-                <button onClick={() => setActiveTab('settings')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-                  <UserCircle size={28} style={{ color: 'var(--text-muted)' }} />
-                  <div>
-                    <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{firmName}</p>
-                    <p style={{ fontSize: '0.65rem', color: planMeta.color, margin: 0, fontWeight: 600 }}>{planMeta.label} Plan</p>
-                  </div>
-                </button>
-                <div style={{ width: 1, height: 24, background: 'var(--border-subtle)', margin: '0 4px' }} />
-                <button onClick={signOut} title="Sign Out" style={{ padding: 6, borderRadius: 8, background: 'rgba(244,63,94,0.1)', color: '#f43f5e', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                  <LogOut size={16} />
-                </button>
-              </div>
+              <button onClick={() => setActiveTab('settings')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 12, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
+                <UserCircle size={28} style={{ color: 'var(--text-muted)' }} />
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{firmName}</p>
+                  <p style={{ fontSize: '0.65rem', color: planMeta.color, margin: 0, fontWeight: 600 }}>{planMeta.label}</p>
+                </div>
+              </button>
             </div>
           </header>
           <div style={{ padding: '28px 32px', maxWidth: 1400, width: '100%', margin: '0 auto' }}>
