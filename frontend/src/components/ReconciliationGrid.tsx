@@ -177,8 +177,8 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
                 const status   = normalise(row.status);
                 const meta     = STATUS_META[status];
                 const isExp    = expandedRows.includes(row.id);
+                // Read persistent status from localStorage if available
                 const action   = actions[row.id] || '';
-                const aMeta    = ACTION_META[action];
 
                 return (
                   <Fragment key={row.id}>

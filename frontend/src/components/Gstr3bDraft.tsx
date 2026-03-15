@@ -22,8 +22,6 @@ export default function Gstr3bDraft({ data, summary }: Props) {
   const round2 = (n: number) => Math.round(n * 100) / 100;
 
   // Calculate from reconciled data
-  const matched = data.filter(r => !['Missing in PR','Missing in 2B','Not In Tally','Not In Portal'].includes(r.status));
-  const totalIGST = matched.reduce((s, r) => s + r.gstrAmount, 0);
   const itcClaimable = summary.itcClaimable || { igst: 0, cgst: 0, sgst: 0 };
   const itcLeakage   = summary.itcLeakage   || { igst: 0, cgst: 0, sgst: 0 };
 

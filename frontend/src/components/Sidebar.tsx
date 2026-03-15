@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileText, BookOpen, BarChart3, Users, Settings, LogOut, FileSearch, Building2, Bell, Shield, CalendarDays, FileCheck, UserCog } from 'lucide-react';
+import { LayoutDashboard, FileText, BookOpen, BarChart3, Settings, LogOut, FileSearch, Building2, Bell, Shield, CalendarDays, FileCheck, UserCog } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps { activeTab: string; onTabChange: (tab: string) => void; }

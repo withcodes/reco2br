@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Plus, UserCheck, X, Shield, User, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Users, Plus, UserCheck, X, Shield, User, CheckCircle } from 'lucide-react';
 
 interface TeamMember { id: string; name: string; email: string; role: 'Senior CA' | 'Junior CA' | 'Admin'; assignedClients: string[]; }
 interface Assignment { id: string; clientName: string; gstin: string; assignedTo: string; status: 'Pending Review' | 'In Progress' | 'Approved' | 'Needs Rework'; createdAt: string; }
