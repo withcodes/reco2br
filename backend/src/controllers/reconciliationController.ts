@@ -141,10 +141,15 @@ export const reconcileGstr2b = (req: Request, res: Response) => {
     const pgd  = (r: any) => normalizeDateString(r['Invoice date'] || r['Voucher Date'] || r['Invoice Date']);
     const ggk  = (r: any) => normalizeString(normalizeGSTIN(r['GSTIN of supplier'] || r['GSTIN of Supplier'] || r['GSTIN'] || r['GSTIN of ECO'] || r['GSTIN of ISD'] || ''));
     const ggi  = (r: any) => normalizeInvoice(r['Invoice number'] || r['Invoice Number'] || r['Invoice Details'] || r['Document number'] || r['Note number'] || '');
+    const getTax = (row: any, keywords: string[]) => {
+      const key = Object.keys(row).find(k => keywords.some(kw => k.toLowerCase().includes(kw)));
+      return key ? parseAmount(row[key]) : 0;
+    };
+
     // Sum all tax types — GSTR-2B row can have IGST, or CGST+SGST (intrastate)
-    const gga  = (r: any) => parseAmount(r['Integrated Tax(\u20b9)'] || 0)
-                           + parseAmount(r['Central Tax(\u20b9)'] || 0)
-                           + parseAmount(r['State/UT Tax(\u20b9)'] || 0);
+    const gga  = (r: any) => getTax(r, ['integrated tax', 'igst'])
+                           + getTax(r, ['central tax', 'cgst'])
+                           + getTax(r, ['state/ut tax', 'state tax', 'sgst']);
     const ggd  = (r: any) => normalizeDateString(r['Invoice date'] || r['Invoice Date'] || r['Document date']);
     const name = (p: any, g: any) => p['Supplier Name'] || (g && g['Trade/Legal name']) || pgk(p);
     const gstin = (p: any) => p['GSTIN of Supplier'] || p['GSTIN/UIN'] || p['GSTIN'] || 'N/A';
