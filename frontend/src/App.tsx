@@ -74,7 +74,6 @@ function App() {
     const plan = profile?.plan || 'starter';
     const planMeta = PLAN_META[plan] || PLAN_META.starter;
     const firmName = profile?.firm_name || user.email || 'Your Firm';
-    const userName = profile?.email?.split('@')[0] || 'User';
 
     const renderContent = () => {
       switch (activeTab) {
