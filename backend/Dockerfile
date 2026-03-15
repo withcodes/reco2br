@@ -10,10 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY backend/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY backend/ .
+COPY . .
 
 # Data directory for persistent voucher storage
 RUN mkdir -p /app/data
