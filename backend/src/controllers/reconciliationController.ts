@@ -97,7 +97,7 @@ export const reconcileGstr2b = (req: Request, res: Response) => {
       const g = String(r['GSTIN of Supplier'] || r['GSTIN/UIN'] || r['GSTIN'] || '').trim();
       const i = String(r['Invoice Number'] || r['Voucher Number'] || '').trim();
       return g.length > 2 || i.length > 2;
-    }));
+    });
     const prData = aggregatePR(prDataFiltered);
     const filingPeriod = detectFilingPeriod(prDataFiltered).toUpperCase();
 
