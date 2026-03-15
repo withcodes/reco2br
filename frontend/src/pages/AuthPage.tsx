@@ -11,6 +11,7 @@ export default function AuthPage({ onBack }: Props) {
   const [password, setPassword] = useState('');
   const [firm,     setFirm]     = useState('');
   const [confirm,  setConfirm]  = useState('');
+  const [invite,   setInvite]   = useState('');
   const [showPwd,  setShowPwd]  = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState('');
@@ -20,7 +21,9 @@ export default function AuthPage({ onBack }: Props) {
     if (!email || !password) { setError('Email and password are required.'); return; }
     if (mode === 'register') {
       if (!firm)                { setError('Firm name is required.');         return; }
-      if (password !== confirm) { setError('Passwords do not match.');         return; }
+      if (!invite)              { setError('Beta invite code is required.');  return; }
+      if (invite !== 'KNIGHTOWL2026') { setError('Invalid invite code. Access is currently restricted.'); return; }
+      if (password !== confirm) { setError('Passwords do not match.');        return; }
       if (password.length < 8)  { setError('Password must be at least 8 characters.'); return; }
     }
     setLoading(true);
@@ -92,6 +95,13 @@ export default function AuthPage({ onBack }: Props) {
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#a1a1aa', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Confirm Password</label>
                 <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="Repeat password"
                   style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+              </div>
+            )}
+            {mode === 'register' && (
+              <div style={{ marginTop: 8 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Beta Invite Code</label>
+                <input type="text" value={invite} onChange={e => setInvite(e.target.value)} placeholder="Enter your secret invite code"
+                  style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(129,140,248,0.5)', background: 'rgba(129,140,248,0.1)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
               </div>
             )}
           </div>
