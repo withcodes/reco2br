@@ -50,11 +50,52 @@ function useCountUp(target: number, duration = 1800) {
   return count;
 }
 
+interface StatCardProps {
+  className: string;
+  delay: string;
+  numericTarget?: number;
+  formatFn?: (n: number) => string;
+  value?: string;
+  label: React.ReactNode;
+}
+
+function StatCard({ className, delay, numericTarget, formatFn, value, label }: StatCardProps) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current && numericTarget) {
+        started.current = true;
+        const start = performance.now();
+        const duration = 2200;
+        const step = (now: number) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          setCount(Math.floor(progress * numericTarget));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.1 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [numericTarget]);
+
+  return (
+    <div ref={ref} className={className} style={{ animationDelay: delay }}>
+      <span className="ko-stat-val">
+        {numericTarget && formatFn ? formatFn(count) : value}
+      </span>
+      {label}
+    </div>
+  );
+}
+
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
   const stat1 = useCountUp(60, 3200);       // 60+ hours
-  const stat2 = useCountUp(175, 3000);      // ₹1.75L (175 → divide /100)
-  const stat3 = useCountUp(992, 2800);      // 99.2% (992 → divide /10)
   const hours = stat1; // alias for hero
 
   return (
@@ -206,17 +247,18 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-stat-card {
           position: relative; padding: 36px 28px; border-radius: 20px;
-          background: rgba(255,255,255,0.035);
+          background: transparent;
           border: 1px solid rgba(255,255,255,0.08);
           backdrop-filter: blur(12px);
           text-align: center; overflow: hidden;
-          transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
         }
         .ko-stat-card:hover {
           transform: translateY(-8px);
-          border-color: rgba(251,191,36,0.30);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(251,191,36,0.12);
+          border-color: rgba(251,191,36,0.50);
+          background: rgba(251,191,36,0.06);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(251,191,36,0.20);
         }
         .ko-stat-card::before {
           content: '';
@@ -238,6 +280,20 @@ export default function LandingPage({ onGetStarted }: Props) {
           animation: ko-shimmer 4s linear infinite;
           margin: 0 0 8px; display: block;
         }
+        @keyframes ko-border-pulse {
+          0%, 100% { border-color: rgba(251,191,36,0.3); box-shadow: 0 0 15px rgba(251,191,36,0.08); }
+          50%       { border-color: rgba(251,191,36,0.7); box-shadow: 0 0 30px rgba(251,191,36,0.25); }
+        }
+        .ko-hero-border {
+          display: inline-block;
+          padding: 24px 48px;
+          border-radius: 28px;
+          border: 2px solid rgba(251,191,36,0.5);
+          background: rgba(0,0,0,0.4);
+          backdrop-filter: blur(10px);
+          margin: 0 auto 32px;
+          animation: ko-border-pulse 3s ease-in-out infinite, ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.18s both;
+        }
       `}</style>
 
       {/* ── HERO ── */}
@@ -250,10 +306,12 @@ export default function LandingPage({ onGetStarted }: Props) {
             <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
             Trusted by 50+ CA firms across India
           </div>
-          <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
-            GST Reconciliation<br />
-            <span className="ko-shimmer-text">Built for CA Firms.</span>
-          </h1>
+          <div className="ko-hero-border">
+            <h1 style={{ fontSize: 'clamp(28px, 4.2vw, 52px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.2px', margin: 0 }}>
+              GST Reconciliation<br />
+              <span className="ko-shimmer-text">Built for CA Firms.</span>
+            </h1>
+          </div>
           <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
             Stop spending{' '}
             <span className="ko-kw-gold">{hours}+ hours</span>{' '}
@@ -277,26 +335,10 @@ export default function LandingPage({ onGetStarted }: Props) {
 
       {/* ── STATS ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, maxWidth: 960, margin: '0 auto 100px', padding: '0 40px' }}>
-        {/* Stat 1 */}
-        <div className="ko-stat-card ko-stat-s1" style={{ animationDelay: '0.05s' }}>
-          <span className="ko-stat-val">{stat1}+</span>
-          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Hours saved per<br /><strong style={{ color: '#fbbf24' }}>firm/month</strong></p>
-        </div>
-        {/* Stat 2 */}
-        <div className="ko-stat-card ko-stat-s2" style={{ animationDelay: '0.15s' }}>
-          <span className="ko-stat-val">₹{(stat2 / 100).toFixed(2)}L</span>
-          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>
-        </div>
-        {/* Stat 3 */}
-        <div className="ko-stat-card ko-stat-s3" style={{ animationDelay: '0.25s' }}>
-          <span className="ko-stat-val">{(stat3 / 10).toFixed(1)}%</span>
-          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>
-        </div>
-        {/* Stat 4 */}
-        <div className="ko-stat-card ko-stat-s4" style={{ animationDelay: '0.35s' }}>
-          <span className="ko-stat-val">3‑pass</span>
-          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>
-        </div>
+        <StatCard delay="0.05s" className="ko-stat-card ko-stat-s1" numericTarget={60} formatFn={(n) => `${n}+`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Hours saved per<br /><strong style={{ color: '#fbbf24' }}>firm/month</strong></p>} />
+        <StatCard delay="0.15s" className="ko-stat-card ko-stat-s2" numericTarget={175} formatFn={(n) => `₹${(n / 100).toFixed(2)}L`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>} />
+        <StatCard delay="0.25s" className="ko-stat-card ko-stat-s3" numericTarget={992} formatFn={(n) => `${(n / 10).toFixed(1)}%`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>} />
+        <StatCard delay="0.35s" className="ko-stat-card ko-stat-s4" value="3-pass" label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>} />
       </div>
 
       {/* ── FEATURES ── */}
