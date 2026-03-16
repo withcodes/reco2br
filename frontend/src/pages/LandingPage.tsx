@@ -161,11 +161,46 @@ export default function LandingPage({ onGetStarted }: Props) {
           bottom: 0px; left: calc(50% - 180px);
           animation: ko-orb-float-2 18s ease-in-out 4s infinite;
         }
-        @keyframes ko-btn-bob {
-          0%,100% { transform: translateY(0px); box-shadow: 0 0 40px rgba(79,70,229,0.4); }
-          50%     { transform: translateY(-4px); box-shadow: 0 8px 50px rgba(79,70,229,0.65); }
+        @keyframes ko-btn-gradient {
+          0%,100% { background-position: 0% 50%; }
+          50%      { background-position: 100% 50%; }
         }
-        .ko-btn-primary { animation: ko-btn-bob 3s ease-in-out infinite; }
+        @keyframes ko-btn-bob {
+          0%,100% { transform: translateY(0px); }
+          50%     { transform: translateY(-5px); }
+        }
+        @keyframes ko-btn-ring {
+          0%     { box-shadow: 0 0 0 0 rgba(124,58,237,0.7), 0 6px 30px rgba(79,70,229,0.5); }
+          70%    { box-shadow: 0 0 0 12px rgba(124,58,237,0), 0 6px 30px rgba(79,70,229,0.5); }
+          100%   { box-shadow: 0 0 0 0 rgba(124,58,237,0), 0 6px 30px rgba(79,70,229,0.5); }
+        }
+        .ko-btn-primary {
+          position: relative; overflow: hidden;
+          background: linear-gradient(270deg, #4f46e5, #7c3aed, #6d28d9, #4f46e5);
+          background-size: 300% 300%;
+          animation: ko-btn-gradient 4s ease infinite, ko-btn-bob 3s ease-in-out infinite, ko-btn-ring 2s ease-out 1s infinite;
+          border: none; border-radius: 14px;
+          padding: 16px 36px;
+          color: white; font-size: 16px; font-weight: 700;
+          cursor: pointer; display: flex; align-items: center; gap: 10px;
+          letter-spacing: 0.01em;
+          transition: filter 0.2s ease;
+        }
+        .ko-btn-primary:hover { filter: brightness(1.15); }
+        .ko-btn-primary::before {
+          content: '';
+          position: absolute; top: 0; left: -100%;
+          width: 60%; height: 100%;
+          background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+          animation: ko-btn-shine 3s ease-in-out 0.5s infinite;
+        }
+        @keyframes ko-btn-shine {
+          0%   { left: -100%; }
+          30%  { left: 130%; }
+          100% { left: 130%; }
+        }
+        .ko-btn-arrow { transition: transform 0.2s ease; }
+        .ko-btn-primary:hover .ko-btn-arrow { transform: translateX(4px); }
       `}</style>
 
       {/* ── HERO ── */}
@@ -191,8 +226,9 @@ export default function LandingPage({ onGetStarted }: Props) {
             <span className="ko-kw-green">automatically.</span>
           </p>
           <div className="ko-ctas" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onGetStarted} className="ko-btn-primary" style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-              Start free 14-day trial <ArrowRight size={18} />
+            <button onClick={onGetStarted} className="ko-btn-primary">
+              Start free 14-day trial
+              <span className="ko-btn-arrow"><ArrowRight size={18} /></span>
             </button>
             <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
               <Phone size={15} /> Book a demo
