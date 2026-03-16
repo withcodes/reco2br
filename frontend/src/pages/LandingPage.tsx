@@ -246,19 +246,17 @@ export default function LandingPage({ onGetStarted }: Props) {
           to   { opacity: 1; transform: translateY(0); }
         }
         .ko-stat-card {
-          position: relative; padding: 36px 28px; border-radius: 20px;
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(12px);
+          position: relative; padding: 40px 28px; border-radius: 20px;
+          background: #0b0b0d; /* solid dark */
+          border: 1px solid rgba(255,255,255,0.06);
+          border-top: none; /* Accent handles top */
           text-align: center; overflow: hidden;
-          transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), box-shadow 0.3s ease;
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
         }
         .ko-stat-card:hover {
           transform: translateY(-8px);
-          border-color: rgba(251,191,36,0.50);
-          background: rgba(251,191,36,0.06);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(251,191,36,0.20);
+          box-shadow: 0 20px 40px rgba(251,191,36,0.05), 0 0 30px rgba(251,191,36,0.08);
         }
         .ko-stat-card::before {
           content: '';
@@ -266,13 +264,13 @@ export default function LandingPage({ onGetStarted }: Props) {
           border-radius: 20px 20px 0 0;
           transition: height 0.3s ease;
         }
-        .ko-stat-card:hover::before { height: 4px; filter: brightness(1.2); }
+        .ko-stat-card:hover::before { height: 4px; filter: brightness(1.1); }
         .ko-stat-s1::before { background: linear-gradient(90deg, #7c3aed, #4f46e5); }
         .ko-stat-s2::before { background: linear-gradient(90deg, #10b981, #34d399); }
         .ko-stat-s3::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
         .ko-stat-s4::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
         .ko-stat-val {
-          font-size: 44px; font-weight: 800; letter-spacing: -2px;
+          font-size: 44px; font-weight: 800; letter-spacing: -1.5px;
           background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #fbbf24 100%);
           background-size: 200% auto;
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -281,18 +279,18 @@ export default function LandingPage({ onGetStarted }: Props) {
           margin: 0 0 8px; display: block;
         }
         @keyframes ko-border-pulse {
-          0%, 100% { border-color: rgba(251,191,36,0.3); box-shadow: 0 0 15px rgba(251,191,36,0.08); }
-          50%       { border-color: rgba(251,191,36,0.7); box-shadow: 0 0 30px rgba(251,191,36,0.25); }
+          0%, 100% { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 16px rgba(251,191,36,0.15); }
+          50%       { border-color: rgba(251,191,36,0.9); box-shadow: 0 0 32px rgba(251,191,36,0.35); }
         }
         .ko-hero-border {
           display: inline-block;
-          padding: 24px 48px;
-          border-radius: 28px;
-          border: 2px solid rgba(251,191,36,0.5);
-          background: rgba(0,0,0,0.4);
-          backdrop-filter: blur(10px);
+          padding: 28px 60px;
+          border-radius: 24px;
+          border: 2px solid #fbbf24;
+          background: #000000; /* Solid dark/black */
           margin: 0 auto 32px;
-          animation: ko-border-pulse 3s ease-in-out infinite, ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.18s both;
+          width: fit-content;
+          animation: ko-border-pulse 2.5s ease-in-out infinite, ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.18s both;
         }
       `}</style>
 
@@ -307,9 +305,9 @@ export default function LandingPage({ onGetStarted }: Props) {
             Trusted by 50+ CA firms across India
           </div>
           <div className="ko-hero-border">
-            <h1 style={{ fontSize: 'clamp(28px, 4.2vw, 52px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.2px', margin: 0 }}>
+            <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.5px', margin: 0 }}>
               GST Reconciliation<br />
-              <span className="ko-shimmer-text">Built for CA Firms.</span>
+              <span style={{ background: 'linear-gradient(90deg, #2dd4bf, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block', marginTop: 8 }}>Built for CA Firms.</span>
             </h1>
           </div>
           <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
