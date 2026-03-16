@@ -93,20 +93,6 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
   );
 }
 
-const renderBlinkingText = (text: string) => {
-  return text.split('').map((char, i) => (
-    <span
-      key={i}
-      className="ko-char"
-      style={{
-        animationDelay: `${i * 0.05}s`
-      }}
-    >
-      {char === ' ' ? '\u00A0' : char}
-    </span>
-  ));
-};
-
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
   const stat1 = useCountUp(60, 3200);       // 60+ hours
@@ -292,16 +278,7 @@ export default function LandingPage({ onGetStarted }: Props) {
           animation: ko-shimmer 4s linear infinite;
           margin: 0 0 8px; display: block;
         }
-        @keyframes ko-letter-blink {
-          0%, 100% { opacity: 1; filter: drop-shadow(0 0 3px rgba(251,191,36,0.3)); }
-          50%      { opacity: 0.25; filter: drop-shadow(0 0 0px rgba(251,191,36,0)); }
-        }
-        .ko-char {
-          display: inline-block;
-          -webkit-text-stroke: 1px #fbbf24; /* Golden stroke outline */
-          color: #ffffff; /* inner fill white */
-          animation: ko-letter-blink 1.8s ease-in-out infinite;
-        }
+        /* ── Hover Glow placeholder if needed ── */
       `}</style>
 
       {/* ── HERO ── */}
@@ -314,9 +291,9 @@ export default function LandingPage({ onGetStarted }: Props) {
             <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
             Trusted by 50+ CA firms across India
           </div>
-          <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5.2vw, 64px)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.5px', margin: '0 auto 32px', maxWidth: 800 }}>
-            <div>{renderBlinkingText("GST Reconciliation")}</div>
-            <div style={{ marginTop: 6 }}>{renderBlinkingText("Built for CA Firms.")}</div>
+          <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
+            GST Reconciliation<br />
+            <span className="ko-shimmer-text">Built for CA Firms.</span>
           </h1>
           <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
             Stop spending{' '}
