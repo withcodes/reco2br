@@ -69,25 +69,25 @@ export default function LandingPage({ onGetStarted }: Props) {
 
       {/* ── HERO ── */}
       <div style={{ textAlign: 'center', padding: '100px 60px 80px', maxWidth: 860, margin: '0 auto' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 99, border: '1px solid rgba(129,140,248,0.35)', background: 'rgba(79,70,229,0.1)', fontSize: 12, color: '#a5b4fc', marginBottom: 32, fontWeight: 500 }}>
+        <div className="stagger-1" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 99, border: '1px solid rgba(129,140,248,0.35)', background: 'rgba(79,70,229,0.1)', fontSize: 12, color: '#a5b4fc', marginBottom: 32, fontWeight: 500 }}>
           <Star size={11} fill="#a5b4fc" /> Trusted by 50+ CA firms across India
         </div>
-        <h1 style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
+        <h1 className="stagger-2" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
           GST Reconciliation<br />
-          <span style={{ background: 'linear-gradient(135deg,#818cf8,#34d399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Built for CA Firms.</span>
+          <span className="animate-shimmer" style={{ background: 'linear-gradient(to right,#818cf8, #34d399, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Built for CA Firms.</span>
         </h1>
-        <p style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
+        <p className="stagger-3" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
           Stop spending 60 hours a month on manual reconciliation. KnightOwl detects ITC leakage, fixes data entry errors, and pre-fills your GSTR-3B — automatically.
         </p>
-        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="stagger-4" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button onClick={onGetStarted} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 0 40px rgba(79,70,229,0.4)' }}>
             Start free 14-day trial <ArrowRight size={18} />
           </button>
-          <button style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Phone size={15} /> Book a demo
           </button>
         </div>
-        <p style={{ fontSize: 12, color: '#52525b', marginTop: 16 }}>No credit card required · Cancel anytime · Setup in 5 minutes</p>
+        <p className="stagger-4" style={{ fontSize: 12, color: '#52525b', marginTop: 16 }}>No credit card required · Cancel anytime · Setup in 5 minutes</p>
       </div>
 
       {/* ── STATS ── */}
