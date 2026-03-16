@@ -93,6 +93,20 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
   );
 }
 
+const renderBlinkingText = (text: string) => {
+  return text.split('').map((char, i) => (
+    <span
+      key={i}
+      className="ko-char"
+      style={{
+        animationDelay: `${i * 0.05}s`
+      }}
+    >
+      {char === ' ' ? '\u00A0' : char}
+    </span>
+  ));
+};
+
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
   const stat1 = useCountUp(60, 3200);       // 60+ hours
@@ -278,19 +292,15 @@ export default function LandingPage({ onGetStarted }: Props) {
           animation: ko-shimmer 4s linear infinite;
           margin: 0 0 8px; display: block;
         }
-        @keyframes ko-border-pulse {
-          0%, 100% { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 16px rgba(251,191,36,0.15); }
-          50%       { border-color: rgba(251,191,36,0.9); box-shadow: 0 0 32px rgba(251,191,36,0.35); }
+        @keyframes ko-letter-blink {
+          0%, 100% { opacity: 1; filter: drop-shadow(0 0 3px rgba(251,191,36,0.3)); }
+          50%      { opacity: 0.25; filter: drop-shadow(0 0 0px rgba(251,191,36,0)); }
         }
-        .ko-hero-border {
+        .ko-char {
           display: inline-block;
-          padding: 28px 60px;
-          border-radius: 24px;
-          border: 2px solid #fbbf24;
-          background: #000000; /* Solid dark/black */
-          margin: 0 auto 32px;
-          width: fit-content;
-          animation: ko-border-pulse 2.5s ease-in-out infinite, ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.18s both;
+          -webkit-text-stroke: 1px #fbbf24; /* Golden stroke outline */
+          color: #ffffff; /* inner fill white */
+          animation: ko-letter-blink 1.8s ease-in-out infinite;
         }
       `}</style>
 
@@ -304,12 +314,10 @@ export default function LandingPage({ onGetStarted }: Props) {
             <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
             Trusted by 50+ CA firms across India
           </div>
-          <div className="ko-hero-border">
-            <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.5px', margin: 0 }}>
-              GST Reconciliation<br />
-              <span style={{ background: 'linear-gradient(90deg, #2dd4bf, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block', marginTop: 8 }}>Built for CA Firms.</span>
-            </h1>
-          </div>
+          <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5.2vw, 64px)', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.5px', margin: '0 auto 32px', maxWidth: 800 }}>
+            <div>{renderBlinkingText("GST Reconciliation")}</div>
+            <div style={{ marginTop: 6 }}>{renderBlinkingText("Built for CA Firms.")}</div>
+          </h1>
           <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
             Stop spending{' '}
             <span className="ko-kw-gold">{hours}+ hours</span>{' '}
