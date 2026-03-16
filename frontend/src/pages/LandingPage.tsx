@@ -77,10 +77,24 @@ export default function LandingPage({ onGetStarted }: Props) {
           0%   { background-position: 200% center; }
           100% { background-position: -200% center; }
         }
+        @keyframes ko-trust-pulse {
+          0%, 100% { box-shadow: 0 0 0px rgba(251,191,36,0), 0 0 8px rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.35); }
+          50%       { box-shadow: 0 0 14px rgba(251,191,36,0.45), 0 0 28px rgba(251,191,36,0.20); border-color: rgba(251,191,36,0.75); }
+        }
+        @keyframes ko-star-spin {
+          0%   { transform: rotate(0deg) scale(1); }
+          50%  { transform: rotate(180deg) scale(1.3); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
         .ko-badge { animation: ko-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
         .ko-h1    { animation: ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.18s both; }
         .ko-p     { animation: ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.30s both; }
         .ko-ctas  { animation: ko-fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.42s both; }
+        .ko-trust-badge {
+          animation: ko-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s both,
+                     ko-trust-pulse 2.8s ease-in-out 0.8s infinite;
+        }
+        .ko-trust-star { animation: ko-star-spin 4s ease-in-out infinite; display: inline-flex; }
         .ko-shimmer-text {
           background: linear-gradient(to right, #818cf8 0%, #34d399 45%, #818cf8 100%);
           background-size: 200% auto;
@@ -93,8 +107,9 @@ export default function LandingPage({ onGetStarted }: Props) {
 
       {/* ── HERO ── */}
       <div style={{ textAlign: 'center', padding: '100px 60px 80px', maxWidth: 860, margin: '0 auto' }}>
-        <div className="ko-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 99, border: '1px solid rgba(129,140,248,0.35)', background: 'rgba(79,70,229,0.1)', fontSize: 12, color: '#a5b4fc', marginBottom: 32, fontWeight: 500 }}>
-          <Star size={11} fill="#a5b4fc" /> Trusted by 50+ CA firms across India
+        <div className="ko-trust-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 18px', borderRadius: 99, border: '1px solid rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)', fontSize: 12, color: '#fbbf24', marginBottom: 32, fontWeight: 600, letterSpacing: '0.02em' }}>
+          <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
+          Trusted by 50+ CA firms across India
         </div>
         <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
           GST Reconciliation<br />
