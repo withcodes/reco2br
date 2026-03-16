@@ -141,25 +141,25 @@ export default function LandingPage({ onGetStarted }: Props) {
           66%     { transform: translate(25px, -25px) scale(0.92); }
         }
         .ko-orb-1 {
-          position: absolute; width: 420px; height: 420px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, transparent 70%);
-          filter: blur(60px); pointer-events: none;
-          top: -80px; left: -100px;
+          position: absolute; width: 500px; height: 500px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(79,70,229,0.35) 0%, transparent 70%);
+          filter: blur(80px); pointer-events: none;
+          top: -60px; left: -60px;
           animation: ko-orb-float-1 12s ease-in-out infinite;
         }
         .ko-orb-2 {
-          position: absolute; width: 360px; height: 360px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(52,211,153,0.12) 0%, transparent 70%);
-          filter: blur(70px); pointer-events: none;
-          top: 50px; right: -80px;
+          position: absolute; width: 440px; height: 440px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(52,211,153,0.28) 0%, transparent 70%);
+          filter: blur(80px); pointer-events: none;
+          top: 20px; right: -60px;
           animation: ko-orb-float-2 15s ease-in-out 2s infinite;
         }
         .ko-orb-3 {
-          position: absolute; width: 280px; height: 280px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
-          filter: blur(50px); pointer-events: none;
-          bottom: -40px; left: 50%; transform: translateX(-50%);
-          animation: ko-orb-float-1 18s ease-in-out 4s infinite;
+          position: absolute; width: 360px; height: 360px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(251,191,36,0.20) 0%, transparent 70%);
+          filter: blur(60px); pointer-events: none;
+          bottom: 0px; left: calc(50% - 180px);
+          animation: ko-orb-float-2 18s ease-in-out 4s infinite;
         }
         @keyframes ko-btn-bob {
           0%,100% { transform: translateY(0px); box-shadow: 0 0 40px rgba(79,70,229,0.4); }
@@ -169,7 +169,7 @@ export default function LandingPage({ onGetStarted }: Props) {
       `}</style>
 
       {/* ── HERO ── */}
-      <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'relative' }}>
         <div className="ko-orb-1" />
         <div className="ko-orb-2" />
         <div className="ko-orb-3" />
