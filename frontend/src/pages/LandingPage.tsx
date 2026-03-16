@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone } from 'lucide-react';
 
 interface Props { onGetStarted: () => void; }
@@ -37,8 +37,27 @@ const FEATURES = [
   { icon: Shield, title: 'Supplier health score', desc: 'Know which suppliers consistently miss filing. Advise clients before ITC gets blocked.' },
 ];
 
+function useCountUp(target: number, duration = 1800) {
+  const [count, setCount] = useState(0);
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    const start = performance.now();
+    const step = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      setCount(Math.floor(progress * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [target, duration]);
+  return count;
+}
+
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
+  const hours = useCountUp(60, 1600);
 
   return (
     <div style={{ background: '#09090b', minHeight: '100vh', color: '#fafafa', fontFamily: 'Inter, sans-serif' }}>
@@ -103,6 +122,14 @@ export default function LandingPage({ onGetStarted }: Props) {
           background-clip: text;
           animation: ko-shimmer 3s linear infinite;
         }
+        @keyframes ko-kw-glow {
+          0%,100% { opacity: 0.85; }
+          50%      { opacity: 1; filter: brightness(1.25); }
+        }
+        .ko-kw-gold   { color: #fbbf24; font-weight: 700; animation: ko-kw-glow 2.5s ease-in-out infinite; }
+        .ko-kw-rose   { color: #fb7185; font-weight: 600; animation: ko-kw-glow 3s   ease-in-out 0.4s infinite; }
+        .ko-kw-purple { color: #a78bfa; font-weight: 600; animation: ko-kw-glow 2.8s ease-in-out 0.8s infinite; }
+        .ko-kw-green  { color: #34d399; font-weight: 600; animation: ko-kw-glow 3.2s ease-in-out 1.2s infinite; }
       `}</style>
 
       {/* ── HERO ── */}
@@ -116,7 +143,12 @@ export default function LandingPage({ onGetStarted }: Props) {
           <span className="ko-shimmer-text">Built for CA Firms.</span>
         </h1>
         <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
-          Stop spending 60 hours a month on manual reconciliation. KnightOwl detects ITC leakage, fixes data entry errors, and pre-fills your GSTR-3B — automatically.
+          Stop spending{' '}
+          <span className="ko-kw-gold">{hours}+ hours</span>{' '}
+          a month on manual reconciliation. KnightOwl detects{' '}
+          <span className="ko-kw-rose">ITC leakage</span>, fixes data entry errors, and pre-fills your{' '}
+          <span className="ko-kw-purple">GSTR-3B</span>{' '}—{' '}
+          <span className="ko-kw-green">automatically.</span>
         </p>
         <div className="ko-ctas" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button onClick={onGetStarted} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 0 40px rgba(79,70,229,0.4)' }}>
