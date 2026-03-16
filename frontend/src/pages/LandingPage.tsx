@@ -57,7 +57,7 @@ function useCountUp(target: number, duration = 1800) {
 
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
-  const hours = useCountUp(60, 1600);
+  const hours = useCountUp(60, 3500);
 
   return (
     <div style={{ background: '#09090b', minHeight: '100vh', color: '#fafafa', fontFamily: 'Inter, sans-serif' }}>
@@ -130,35 +130,76 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-kw-rose   { color: #fb7185; font-weight: 600; animation: ko-kw-glow 3s   ease-in-out 0.4s infinite; }
         .ko-kw-purple { color: #a78bfa; font-weight: 600; animation: ko-kw-glow 2.8s ease-in-out 0.8s infinite; }
         .ko-kw-green  { color: #34d399; font-weight: 600; animation: ko-kw-glow 3.2s ease-in-out 1.2s infinite; }
+        @keyframes ko-orb-float-1 {
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33%     { transform: translate(30px, -40px) scale(1.08); }
+          66%     { transform: translate(-20px, 20px) scale(0.95); }
+        }
+        @keyframes ko-orb-float-2 {
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33%     { transform: translate(-35px, 30px) scale(1.1); }
+          66%     { transform: translate(25px, -25px) scale(0.92); }
+        }
+        .ko-orb-1 {
+          position: absolute; width: 420px; height: 420px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, transparent 70%);
+          filter: blur(60px); pointer-events: none;
+          top: -80px; left: -100px;
+          animation: ko-orb-float-1 12s ease-in-out infinite;
+        }
+        .ko-orb-2 {
+          position: absolute; width: 360px; height: 360px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(52,211,153,0.12) 0%, transparent 70%);
+          filter: blur(70px); pointer-events: none;
+          top: 50px; right: -80px;
+          animation: ko-orb-float-2 15s ease-in-out 2s infinite;
+        }
+        .ko-orb-3 {
+          position: absolute; width: 280px; height: 280px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
+          filter: blur(50px); pointer-events: none;
+          bottom: -40px; left: 50%; transform: translateX(-50%);
+          animation: ko-orb-float-1 18s ease-in-out 4s infinite;
+        }
+        @keyframes ko-btn-bob {
+          0%,100% { transform: translateY(0px); box-shadow: 0 0 40px rgba(79,70,229,0.4); }
+          50%     { transform: translateY(-4px); box-shadow: 0 8px 50px rgba(79,70,229,0.65); }
+        }
+        .ko-btn-primary { animation: ko-btn-bob 3s ease-in-out infinite; }
       `}</style>
 
       {/* ── HERO ── */}
-      <div style={{ textAlign: 'center', padding: '100px 60px 80px', maxWidth: 860, margin: '0 auto' }}>
-        <div className="ko-trust-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 18px', borderRadius: 99, border: '1px solid rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)', fontSize: 12, color: '#fbbf24', marginBottom: 32, fontWeight: 600, letterSpacing: '0.02em' }}>
-          <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
-          Trusted by 50+ CA firms across India
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className="ko-orb-1" />
+        <div className="ko-orb-2" />
+        <div className="ko-orb-3" />
+        <div style={{ textAlign: 'center', padding: '100px 60px 80px', maxWidth: 860, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="ko-trust-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 18px', borderRadius: 99, border: '1px solid rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)', fontSize: 12, color: '#fbbf24', marginBottom: 32, fontWeight: 600, letterSpacing: '0.02em' }}>
+            <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
+            Trusted by 50+ CA firms across India
+          </div>
+          <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
+            GST Reconciliation<br />
+            <span className="ko-shimmer-text">Built for CA Firms.</span>
+          </h1>
+          <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
+            Stop spending{' '}
+            <span className="ko-kw-gold">{hours}+ hours</span>{' '}
+            a month on manual reconciliation. KnightOwl detects{' '}
+            <span className="ko-kw-rose">ITC leakage</span>, fixes data entry errors, and pre-fills your{' '}
+            <span className="ko-kw-purple">GSTR-3B</span>{' '}—{' '}
+            <span className="ko-kw-green">automatically.</span>
+          </p>
+          <div className="ko-ctas" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={onGetStarted} className="ko-btn-primary" style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+              Start free 14-day trial <ArrowRight size={18} />
+            </button>
+            <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Phone size={15} /> Book a demo
+            </button>
+          </div>
+          <p className="ko-ctas" style={{ fontSize: 12, color: '#52525b', marginTop: 16 }}>No credit card required · Cancel anytime · Setup in 5 minutes</p>
         </div>
-        <h1 className="ko-h1" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', margin: '0 0 24px' }}>
-          GST Reconciliation<br />
-          <span className="ko-shimmer-text">Built for CA Firms.</span>
-        </h1>
-        <p className="ko-p" style={{ fontSize: 18, color: '#a1a1aa', lineHeight: 1.7, maxWidth: 580, margin: '0 auto 40px' }}>
-          Stop spending{' '}
-          <span className="ko-kw-gold">{hours}+ hours</span>{' '}
-          a month on manual reconciliation. KnightOwl detects{' '}
-          <span className="ko-kw-rose">ITC leakage</span>, fixes data entry errors, and pre-fills your{' '}
-          <span className="ko-kw-purple">GSTR-3B</span>{' '}—{' '}
-          <span className="ko-kw-green">automatically.</span>
-        </p>
-        <div className="ko-ctas" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={onGetStarted} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 0 40px rgba(79,70,229,0.4)' }}>
-            Start free 14-day trial <ArrowRight size={18} />
-          </button>
-          <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Phone size={15} /> Book a demo
-          </button>
-        </div>
-        <p className="ko-ctas" style={{ fontSize: 12, color: '#52525b', marginTop: 16 }}>No credit card required · Cancel anytime · Setup in 5 minutes</p>
       </div>
 
       {/* ── STATS ── */}
