@@ -256,8 +256,12 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-stat-card:hover {
           transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(251,191,36,0.05), 0 0 30px rgba(251,191,36,0.08);
         }
+        /* Individual Backlit Ambient Glows on Hover */
+        .ko-stat-s1:hover { box-shadow: 0 15px 35px rgba(124,58,237,0.18), 0 0 30px rgba(124,58,237,0.15); }
+        .ko-stat-s2:hover { box-shadow: 0 15px 35px rgba(16,185,129,0.18), 0 0 30px rgba(16,185,129,0.15); }
+        .ko-stat-s3:hover { box-shadow: 0 15px 35px rgba(59,130,246,0.18), 0 0 30px rgba(59,130,246,0.15); }
+        .ko-stat-s4:hover { box-shadow: 0 15px 35px rgba(245,158,11,0.18), 0 0 30px rgba(245,158,11,0.15); }
         .ko-stat-card::before {
           content: '';
           position: absolute; top: 0; left: 0; right: 0; height: 3px;
@@ -269,13 +273,17 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-stat-s2::before { background: linear-gradient(90deg, #10b981, #34d399); }
         .ko-stat-s3::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
         .ko-stat-s4::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        @keyframes ko-number-glow {
+          0%, 100% { text-shadow: 0 0 8px rgba(251,191,36,0.15); }
+          50%       { text-shadow: 0 0 18px rgba(251,191,36,0.45); }
+        }
         .ko-stat-val {
           font-size: 44px; font-weight: 800; letter-spacing: -1.5px;
           background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #fbbf24 100%);
           background-size: 200% auto;
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: ko-shimmer 4s linear infinite;
+          animation: ko-shimmer 4s linear infinite, ko-number-glow 2s ease-in-out infinite;
           margin: 0 0 8px; display: block;
         }
         /* ── Hover Glow placeholder if needed ── */
