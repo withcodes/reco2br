@@ -21,12 +21,7 @@ const PLANS = [
   },
 ];
 
-const STATS = [
-  { value: '60+', label: 'Hours saved per firm/month' },
-  { value: '₹1.75L', label: 'Avg ITC leakage detected' },
-  { value: '99.2%', label: 'Match accuracy' },
-  { value: '3-pass', label: 'Fuzzy matching engine' },
-];
+
 
 const FEATURES = [
   { icon: Zap, title: 'Smart reconciliation', desc: 'O→0 normalization, fuzzy matching, split-rate aggregation — catches errors Suvit misses.' },
@@ -57,7 +52,10 @@ function useCountUp(target: number, duration = 1800) {
 
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
-  const hours = useCountUp(60, 3500);
+  const stat1 = useCountUp(60, 3200);       // 60+ hours
+  const stat2 = useCountUp(175, 3000);      // ₹1.75L (175 → divide /100)
+  const stat3 = useCountUp(992, 2800);      // 99.2% (992 → divide /10)
+  const hours = stat1; // alias for hero
 
   return (
     <div style={{ background: '#09090b', minHeight: '100vh', color: '#fafafa', fontFamily: 'Inter, sans-serif' }}>
@@ -201,6 +199,45 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-btn-arrow { transition: transform 0.2s ease; }
         .ko-btn-primary:hover .ko-btn-arrow { transform: translateX(4px); }
+        /* ── Stat Cards ── */
+        @keyframes ko-stat-in {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .ko-stat-card {
+          position: relative; padding: 36px 28px; border-radius: 20px;
+          background: rgba(255,255,255,0.035);
+          border: 1px solid rgba(255,255,255,0.08);
+          backdrop-filter: blur(12px);
+          text-align: center; overflow: hidden;
+          transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease;
+          animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        .ko-stat-card:hover {
+          transform: translateY(-8px);
+          border-color: rgba(251,191,36,0.30);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(251,191,36,0.12);
+        }
+        .ko-stat-card::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          border-radius: 20px 20px 0 0;
+          transition: height 0.3s ease;
+        }
+        .ko-stat-card:hover::before { height: 4px; filter: brightness(1.2); }
+        .ko-stat-s1::before { background: linear-gradient(90deg, #7c3aed, #4f46e5); }
+        .ko-stat-s2::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .ko-stat-s3::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .ko-stat-s4::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .ko-stat-val {
+          font-size: 44px; font-weight: 800; letter-spacing: -2px;
+          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #fbbf24 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: ko-shimmer 4s linear infinite;
+          margin: 0 0 8px; display: block;
+        }
       `}</style>
 
       {/* ── HERO ── */}
@@ -239,13 +276,27 @@ export default function LandingPage({ onGetStarted }: Props) {
       </div>
 
       {/* ── STATS ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: 'rgba(255,255,255,0.06)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', maxWidth: 900, margin: '0 auto 100px' }}>
-        {STATS.map((s, i) => (
-          <div key={i} style={{ padding: '32px 24px', textAlign: 'center', background: '#09090b' }}>
-            <p style={{ fontSize: 36, fontWeight: 800, color: '#818cf8', margin: '0 0 6px', letterSpacing: '-1px' }}>{s.value}</p>
-            <p style={{ fontSize: 13, color: '#71717a', margin: 0 }}>{s.label}</p>
-          </div>
-        ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, maxWidth: 960, margin: '0 auto 100px', padding: '0 40px' }}>
+        {/* Stat 1 */}
+        <div className="ko-stat-card ko-stat-s1" style={{ animationDelay: '0.05s' }}>
+          <span className="ko-stat-val">{stat1}+</span>
+          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Hours saved per<br /><strong style={{ color: '#fbbf24' }}>firm/month</strong></p>
+        </div>
+        {/* Stat 2 */}
+        <div className="ko-stat-card ko-stat-s2" style={{ animationDelay: '0.15s' }}>
+          <span className="ko-stat-val">₹{(stat2 / 100).toFixed(2)}L</span>
+          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>
+        </div>
+        {/* Stat 3 */}
+        <div className="ko-stat-card ko-stat-s3" style={{ animationDelay: '0.25s' }}>
+          <span className="ko-stat-val">{(stat3 / 10).toFixed(1)}%</span>
+          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>
+        </div>
+        {/* Stat 4 */}
+        <div className="ko-stat-card ko-stat-s4" style={{ animationDelay: '0.35s' }}>
+          <span className="ko-stat-val">3‑pass</span>
+          <p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>
+        </div>
       </div>
 
       {/* ── FEATURES ── */}
