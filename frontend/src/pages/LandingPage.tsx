@@ -281,18 +281,19 @@ export default function LandingPage({ onGetStarted }: Props) {
           mix-blend-mode: screen;
         }
         .ko-arch-1 {
-          width: 550px; height: 550px;
-          border: 45px solid rgba(124,58,237,0.3);
+          width: 500px; height: 500px;
+          border: 45px solid rgba(124,58,237,0.5); /* increased opacity */
           border-bottom-color: transparent; border-left-color: transparent;
-          filter: blur(16px);
-          left: -280px; bottom: -120px;
+          filter: blur(4px); /* much sharper outline edge */
+          left: -250px; bottom: -100px;
           animation: ko-arch-float 8s ease-in-out infinite;
         }
         .ko-arch-2 {
-          width: 650px; height: 650px;
-          border: 40px solid rgba(139,92,246,0.25);
-          filter: blur(18px);
-          right: -320px; top: -160px;
+          width: 500px; height: 500px;
+          border: 45px solid rgba(139,92,246,0.4);
+          border-top-color: transparent; border-right-color: transparent;
+          filter: blur(4px);
+          right: -250px; top: -100px;
           animation: ko-arch-float 10s ease-in-out infinite reverse;
         }
         /* ── Stat Cards ── */
