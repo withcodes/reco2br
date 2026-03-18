@@ -200,46 +200,64 @@ export default function LandingPage({ onGetStarted }: Props) {
           bottom: 0px; left: calc(50% - 180px);
           animation: ko-orb-float-2 18s ease-in-out 4s infinite;
         }
-        @keyframes ko-btn-gradient {
-          0%,100% { background-position: 0% 50%; }
-          50%      { background-position: 100% 50%; }
+        @keyframes ko-glow-animate {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
         }
-        @keyframes ko-btn-bob {
-          0%,100% { transform: translateY(0px); }
-          50%     { transform: translateY(-5px); }
+        .ko-glow-wrapper {
+          position: relative;
+          display: inline-block;
+          border-radius: 99px;
         }
-        @keyframes ko-btn-ring {
-          0%     { box-shadow: 0 0 0 0 rgba(124,58,237,0.7), 0 6px 30px rgba(79,70,229,0.5); }
-          70%    { box-shadow: 0 0 0 12px rgba(124,58,237,0), 0 6px 30px rgba(79,70,229,0.5); }
-          100%   { box-shadow: 0 0 0 0 rgba(124,58,237,0), 0 6px 30px rgba(79,70,229,0.5); }
+        /* Outer Blurry Glow */
+        .ko-glow-wrapper::after {
+          content: '';
+          position: absolute;
+          top: -2px; left: -2px; right: -2px; bottom: -2px;
+          border-radius: 99px;
+          background: linear-gradient(90deg, #ff007f, #7000ff, #00e5ff, #ff007f);
+          background-size: 200% auto;
+          filter: blur(14px);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          z-index: -1;
+          animation: ko-glow-animate 3s linear infinite;
         }
-        .ko-btn-primary {
-          position: relative; overflow: hidden;
-          background: linear-gradient(270deg, #4f46e5, #7c3aed, #6d28d9, #4f46e5);
-          background-size: 300% 300%;
-          animation: ko-btn-gradient 4s ease infinite, ko-btn-bob 3s ease-in-out infinite, ko-btn-ring 2s ease-out 1s infinite;
-          border: none; border-radius: 14px;
-          padding: 16px 36px;
+        /* Crisp Outline Glow */
+        .ko-glow-wrapper::before {
+          content: '';
+          position: absolute;
+          top: -1.5px; left: -1.5px; right: -1.5px; bottom: -1.5px;
+          border-radius: 99px;
+          background: linear-gradient(90deg, #ff007f, #7000ff, #00e5ff, #ff007f);
+          background-size: 200% auto;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          z-index: 0;
+          animation: ko-glow-animate 3s linear infinite;
+        }
+        .ko-glow-wrapper:hover::after,
+        .ko-glow-wrapper:hover::before {
+          opacity: 1;
+        }
+        .ko-glow-btn {
+          position: relative;
+          z-index: 2;
+          background: #000000;
+          border: 1px solid rgba(255,255,255,0.12); /* fallback static border */
+          border-radius: 99px; /* Pill shape */
+          padding: 16px 40px;
           color: white; font-size: 16px; font-weight: 700;
           cursor: pointer; display: flex; align-items: center; gap: 10px;
-          letter-spacing: 0.01em;
-          transition: filter 0.2s ease;
+          transition: border-color 0.3s ease, transform 0.2s ease, background 0.2s;
         }
-        .ko-btn-primary:hover { filter: brightness(1.15); }
-        .ko-btn-primary::before {
-          content: '';
-          position: absolute; top: 0; left: -100%;
-          width: 60%; height: 100%;
-          background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
-          animation: ko-btn-shine 3s ease-in-out 0.5s infinite;
-        }
-        @keyframes ko-btn-shine {
-          0%   { left: -100%; }
-          30%  { left: 130%; }
-          100% { left: 130%; }
+        .ko-glow-wrapper:hover .ko-glow-btn {
+          border-color: transparent;
+          transform: scale(1.02);
+          background: rgba(0,0,0,0.9); /* maintain dark core */
         }
         .ko-btn-arrow { transition: transform 0.2s ease; }
-        .ko-btn-primary:hover .ko-btn-arrow { transform: translateX(4px); }
+        .ko-glow-btn:hover .ko-btn-arrow { transform: translateX(4px); }
         /* ── Stat Cards ── */
         @keyframes ko-stat-in {
           from { opacity: 0; transform: translateY(24px); }
@@ -247,13 +265,18 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-stat-card {
           position: relative; padding: 40px 28px; border-radius: 20px;
-          background: #0b0b0d; /* solid dark */
           border: 1px solid rgba(255,255,255,0.06);
           border-top: none; /* Accent handles top */
+          backdrop-filter: blur(16px);
           text-align: center; overflow: hidden;
-          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), box-shadow 0.3s ease;
+          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), box-shadow 0.3s ease, background 0.3s ease;
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
         }
+        /* Colored Glass Backings */
+        .ko-stat-s1 { background: linear-gradient(145deg, rgba(124,58,237,0.12), rgba(79,70,229,0.03)); }
+        .ko-stat-s2 { background: linear-gradient(145deg, rgba(16,185,129,0.12), rgba(52,211,153,0.03)); }
+        .ko-stat-s3 { background: linear-gradient(145deg, rgba(59,130,246,0.12), rgba(96,165,249,0.03)); }
+        .ko-stat-s4 { background: linear-gradient(145deg, rgba(245,158,11,0.12), rgba(251,191,36,0.03)); }
         .ko-stat-card:hover {
           transform: translateY(-8px);
         }
@@ -312,10 +335,12 @@ export default function LandingPage({ onGetStarted }: Props) {
             <span className="ko-kw-green">automatically.</span>
           </p>
           <div className="ko-ctas" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onGetStarted} className="ko-btn-primary">
-              Start free 14-day trial
-              <span className="ko-btn-arrow"><ArrowRight size={18} /></span>
-            </button>
+            <div className="ko-glow-wrapper">
+              <button onClick={onGetStarted} className="ko-glow-btn">
+                Start free 14-day trial
+                <span className="ko-btn-arrow"><ArrowRight size={18} /></span>
+              </button>
+            </div>
             <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
               <Phone size={15} /> Book a demo
             </button>
