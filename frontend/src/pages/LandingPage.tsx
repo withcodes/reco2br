@@ -265,6 +265,36 @@ export default function LandingPage({ onGetStarted }: Props) {
           background: linear-gradient(90deg, #4f46e5, #3b82f6, #2dd4bf, #4f46e5);
           background-size: 200% auto;
         }
+        
+        /* ── Bottom CTA Arches ── */
+        @keyframes ko-arch-float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50%       { transform: translate(15px, -15px) rotate(2deg); }
+        }
+        .ko-bottom-cta {
+          position: relative; overflow: hidden; background: #040405;
+          padding: 120px 60px; text-align: center;
+          border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .ko-arch {
+          position: absolute; border-radius: 50%; pointer-events: none;
+          mix-blend-mode: screen;
+        }
+        .ko-arch-1 {
+          width: 550px; height: 550px;
+          border: 45px solid rgba(124,58,237,0.3);
+          border-bottom-color: transparent; border-left-color: transparent;
+          filter: blur(16px);
+          left: -280px; bottom: -120px;
+          animation: ko-arch-float 8s ease-in-out infinite;
+        }
+        .ko-arch-2 {
+          width: 650px; height: 650px;
+          border: 40px solid rgba(139,92,246,0.25);
+          filter: blur(18px);
+          right: -320px; top: -160px;
+          animation: ko-arch-float 10s ease-in-out infinite reverse;
+        }
         /* ── Stat Cards ── */
         @keyframes ko-stat-in {
           from { opacity: 0; transform: translateY(24px); }
@@ -450,23 +480,34 @@ export default function LandingPage({ onGetStarted }: Props) {
         </div>
       </div>
 
-      {/* ── ABOUT / CTA ── */}
-      <div id="about" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(79,70,229,0.06)', padding: '80px 60px', textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Shield size={26} color="white" />
+      {/* ── ABOUT / CTA (Glowing Arches) ── */}
+      <div id="about" className="ko-bottom-cta">
+        {/* Glow Arches Background */}
+        <div className="ko-arch ko-arch-1" />
+        <div className="ko-arch ko-arch-2" />
+
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 650, margin: '0 auto' }}>
+          {/* Small Floating pill tag */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 99, background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.3)', color: '#a78bfa', fontSize: 12, fontWeight: 600, marginBottom: 24, letterSpacing: '0.02em' }}>
+             <Shield size={13} fill="#a78bfa" color="#a78bfa" /> 100% Automated & Secure
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <p style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Knight<span style={{ color: '#818cf8' }}>Owl</span></p>
-            <p style={{ margin: 0, fontSize: 11, color: '#71717a', letterSpacing: 2, textTransform: 'uppercase' }}>GST Automation</p>
+
+          <h2 style={{ fontSize: 'clamp(32px, 4vw, 42px)', fontWeight: 800, margin: '0 0 16px', letterSpacing: '-1px', color: '#ffffff', lineHeight: 1.15 }}>
+            Ready to save 60+ hours<br />of manual work?
+          </h2>
+          <p style={{ color: '#a1a1aa', fontSize: 16, marginBottom: 40, lineHeight: 1.6 }}>
+            Join forward-thinking CA firms across India who trust KnightOwl for their fully automated GST reconciliation.
+          </p>
+
+          <div className="ko-glow-wrapper">
+            <button onClick={onGetStarted} className="ko-glow-btn">
+              Start your free 14-day trial 
+              <span className="ko-btn-arrow"><ArrowRight size={18} /></span>
+            </button>
           </div>
+
+          <p style={{ fontSize: 13, color: '#52525b', marginTop: 40 }}>© 2025 KnightOwl Tech Pvt Ltd · contact@knightowlgst.com</p>
         </div>
-        <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, margin: '0 0 16px', letterSpacing: '-0.5px' }}>Ready to save 60 hours/month?</h2>
-        <p style={{ color: '#71717a', fontSize: 16, marginBottom: 36 }}>Join CA firms across India who trust KnightOwl for their GST reconciliation.</p>
-        <button onClick={onGetStarted} style={{ padding: '16px 40px', borderRadius: 14, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 0 50px rgba(79,70,229,0.5)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          Start your free 14-day trial <ArrowRight size={18} />
-        </button>
-        <p style={{ fontSize: 13, color: '#52525b', marginTop: 20 }}>© 2025 KnightOwl Tech Pvt Ltd · contact@knightowlgst.com</p>
       </div>
     </div>
   );
