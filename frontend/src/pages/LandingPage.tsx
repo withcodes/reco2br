@@ -258,6 +258,13 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-btn-arrow { transition: transform 0.2s ease; }
         .ko-glow-btn:hover .ko-btn-arrow { transform: translateX(4px); }
+        
+        /* Secondary Glow Variant (Indigo / Royal Blue) */
+        .ko-glow-secondary::after,
+        .ko-glow-secondary::before {
+          background: linear-gradient(90deg, #4f46e5, #3b82f6, #2dd4bf, #4f46e5);
+          background-size: 200% auto;
+        }
         /* ── Stat Cards ── */
         @keyframes ko-stat-in {
           from { opacity: 0; transform: translateY(24px); }
@@ -341,9 +348,11 @@ export default function LandingPage({ onGetStarted }: Props) {
                 <span className="ko-btn-arrow"><ArrowRight size={18} /></span>
               </button>
             </div>
-            <button onClick={onGetStarted} style={{ padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Phone size={15} /> Book a demo
-            </button>
+            <div className="ko-glow-wrapper ko-glow-secondary">
+              <button onClick={onGetStarted} className="ko-glow-btn">
+                <Phone size={15} /> Book a demo
+              </button>
+            </div>
           </div>
           <p className="ko-ctas" style={{ fontSize: 12, color: '#52525b', marginTop: 16 }}>No credit card required · Cancel anytime · Setup in 5 minutes</p>
         </div>
