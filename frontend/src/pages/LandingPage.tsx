@@ -271,33 +271,51 @@ export default function LandingPage({ onGetStarted }: Props) {
           to   { opacity: 1; transform: translateY(0); }
         }
         .ko-stat-card {
-          position: relative; padding: 40px 28px; border-radius: 20px;
-          border: 1px solid rgba(255,255,255,0.06);
-          border-top: none; /* Accent handles top */
+          position: relative; padding: 40px 28px; border-radius: 24px;
           backdrop-filter: blur(16px);
-          text-align: center; overflow: hidden;
-          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), box-shadow 0.3s ease, background 0.3s ease;
+          text-align: center; overflow: visible; /* glow bleeds out */
+          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), transform 0.3s ease;
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
+          border: 1.5px solid transparent;
+          background-clip: padding-box, border-box;
+          background-origin: padding-box, border-box;
         }
-        /* Colored Glass Backings */
-        .ko-stat-s1 { background: linear-gradient(145deg, rgba(124,58,237,0.12), rgba(79,70,229,0.03)); }
-        .ko-stat-s2 { background: linear-gradient(145deg, rgba(16,185,129,0.12), rgba(52,211,153,0.03)); }
-        .ko-stat-s3 { background: linear-gradient(145deg, rgba(59,130,246,0.12), rgba(96,165,249,0.03)); }
-        .ko-stat-s4 { background: linear-gradient(145deg, rgba(245,158,11,0.12), rgba(251,191,36,0.03)); }
         .ko-stat-card:hover {
-          transform: translateY(-8px);
+          transform: translateY(-8px) scale(1.02);
         }
-        /* Individual Backlit Ambient Glows on Hover */
-        .ko-stat-s1:hover { box-shadow: 0 15px 35px rgba(124,58,237,0.18), 0 0 30px rgba(124,58,237,0.15); }
-        .ko-stat-s2:hover { box-shadow: 0 15px 35px rgba(16,185,129,0.18), 0 0 30px rgba(16,185,129,0.15); }
-        .ko-stat-s3:hover { box-shadow: 0 15px 35px rgba(59,130,246,0.18), 0 0 30px rgba(59,130,246,0.15); }
-        .ko-stat-s4:hover { box-shadow: 0 15px 35px rgba(245,158,11,0.18), 0 0 30px rgba(245,158,11,0.15); }
-        .ko-stat-card::before {
+
+        /* Continuous Gradient Borders (Mockup Style) */
+        .ko-stat-s1 { 
+          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #f43f5e, #f97316); 
+        }
+        .ko-stat-s2 { 
+          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #06b6d4, #3b82f6); 
+        }
+        .ko-stat-s3 { 
+          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #6366f1, #a855f7); 
+        }
+        .ko-stat-s4 { 
+          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #fbbf24, #f59e0b); 
+        }
+
+        /* Ambient Glow Layers behind cards */
+        .ko-stat-card::after {
           content: '';
-          position: absolute; top: 0; left: 0; right: 0; height: 3px;
-          border-radius: 20px 20px 0 0;
-          transition: height 0.3s ease;
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          border-radius: 24px;
+          filter: blur(24px);
+          opacity: 0.15;
+          z-index: -1;
+          transition: opacity 0.3s ease;
         }
+        .ko-stat-card:hover::after {
+          opacity: 0.45;
+        }
+        .ko-stat-s1::after { background: linear-gradient(135deg, #f43f5e, #f97316); }
+        .ko-stat-s2::after { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+        .ko-stat-s3::after { background: linear-gradient(135deg, #6366f1, #a855f7); }
+        .ko-stat-s4::after { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
         .ko-stat-card:hover::before { height: 4px; filter: brightness(1.1); }
         .ko-stat-s1::before { background: linear-gradient(90deg, #7c3aed, #4f46e5); }
         .ko-stat-s2::before { background: linear-gradient(90deg, #10b981, #34d399); }
