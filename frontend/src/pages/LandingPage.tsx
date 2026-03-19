@@ -297,6 +297,36 @@ export default function LandingPage({ onGetStarted }: Props) {
           background-size: 200% auto;
         }
         
+        /* ── Pricing Cards ── */
+        .ko-pricing-card {
+          position: relative; padding: 1px; border-radius: 20px;
+          overflow: hidden; background: rgba(255,255,255,0.05);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        .ko-pricing-card:hover { 
+          transform: translateY(-8px) scale(1.01); 
+          box-shadow: 0 16px 36px rgba(0,0,0,0.6);
+        }
+        .ko-pricing-card .ko-laser {
+          position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+          background: conic-gradient(from 0deg, transparent 40%, #818cf8 48%, #34d399 52%, transparent 60%);
+          animation: ko-spin 4s linear infinite;
+          opacity: 0; z-index: 0; pointer-events: none; mix-blend-mode: screen;
+          transition: opacity 0.3s ease;
+        }
+        .ko-pricing-card:hover .ko-laser { opacity: 0.8; }
+        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } /* Continuous shine triggers safe */
+
+        .ko-pricing-card-inner {
+          position: relative; background: #09090b; border-radius: 19px;
+          padding: 32px; height: 100%; z-index: 1;
+          display: flex; flex-direction: column;
+        }
+        .ko-pricing-card.is-highlight .ko-pricing-card-inner {
+          background: rgba(79,70,229,0.06); /* Maintain light backing setups safe */
+          backdrop-filter: blur(12px);
+        }
+
         /* ── Bottom CTA Arches ── */
         @keyframes ko-arch-float {
           0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -306,6 +336,10 @@ export default function LandingPage({ onGetStarted }: Props) {
           position: relative; overflow: hidden; background: #040405;
           padding: 120px 60px; text-align: center;
           border-top: 1px solid rgba(255,255,255,0.04);
+          /* Transparent Mesh Grid structural backdrop config presets */
+          background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+          background-size: 40px 40px;
         }
         .ko-arch {
           position: absolute; border-radius: 50%; pointer-events: none;
@@ -626,25 +660,28 @@ export default function LandingPage({ onGetStarted }: Props) {
               ? `₹${Math.round(parseInt(plan.price.replace(/[₹,]/g, '')) * 0.8).toLocaleString('en-IN')}`
               : plan.price;
             return (
-              <div key={i} style={{ padding: '32px', borderRadius: 20, border: plan.highlight ? '1.5px solid #4f46e5' : '1px solid rgba(255,255,255,0.08)', background: plan.highlight ? 'rgba(79,70,229,0.08)' : 'rgba(255,255,255,0.02)', position: 'relative' }}>
-                {plan.tag && <span style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 11, fontWeight: 700, padding: '4px 14px', borderRadius: 99 }}>{plan.tag}</span>}
-                <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 8px', color: '#fafafa' }}>{plan.name}</h3>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 24 }}>
-                  <span style={{ fontSize: 36, fontWeight: 800, color: plan.highlight ? '#818cf8' : '#fafafa' }}>{price}</span>
-                  <span style={{ fontSize: 13, color: '#71717a' }}>{plan.period}</span>
-                </div>
-                <div style={{ marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {plan.features.map((f, fi) => (
-                    <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14 }}>
-                      <CheckCircle size={15} color="#34d399" style={{ flexShrink: 0 }} />
-                      <span style={{ color: '#a1a1aa' }}>{f}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="ko-glow-wrapper ko-glow-secondary" style={{ width: '100%', display: 'block' }}>
-                  <button onClick={onGetStarted} className="ko-glow-btn" style={{ width: '100%', justifyContent: 'center' }}>
-                    {plan.cta} <ArrowRight size={14} />
-                  </button>
+              <div key={i} className={`ko-pricing-card ${plan.highlight ? 'is-highlight' : ''}`}>
+                <div className="ko-laser" />
+                <div className="ko-pricing-card-inner">
+                  {plan.tag && <span style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 11, fontWeight: 700, padding: '4px 14px', borderRadius: 99 }}>{plan.tag}</span>}
+                  <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 8px', color: '#fafafa' }}>{plan.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 24 }}>
+                    <span style={{ fontSize: 36, fontWeight: 800, color: plan.highlight ? '#818cf8' : '#fafafa' }}>{price}</span>
+                    <span style={{ fontSize: 13, color: '#71717a' }}>{plan.period}</span>
+                  </div>
+                  <div style={{ marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {plan.features.map((f, fi) => (
+                      <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14 }}>
+                        <CheckCircle size={15} color="#34d399" style={{ flexShrink: 0 }} />
+                        <span style={{ color: '#a1a1aa' }}>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="ko-glow-wrapper ko-glow-secondary" style={{ width: '100%', display: 'block', marginTop: 'auto' }}>
+                    <button onClick={onGetStarted} className="ko-glow-btn" style={{ width: '100%', justifyContent: 'center' }}>
+                      {plan.cta} <ArrowRight size={14} />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
