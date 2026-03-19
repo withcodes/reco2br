@@ -10,7 +10,7 @@ const PLANS = [
     cta: 'Start Free Trial', highlight: false,
   },
   {
-    name: 'Professional', price: '₹2,499', period: '/month', tag: 'Most Popular',
+    name: 'Professional', price: '₹2,499', period: '/month', tag: '',
     features: ['25 clients', 'GSTR-1 + 2B Reco', 'GSTR-3B Draft', 'Team workflow', 'Supplier health', 'Priority support'],
     cta: 'Start Free Trial', highlight: true,
   },
@@ -311,12 +311,10 @@ export default function LandingPage({ onGetStarted }: Props) {
           position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
           background: conic-gradient(from 0deg, #ff007f, #7000ff, #00e5ff, #ff007f);
           animation: ko-spin 6s linear infinite; 
-          opacity: 0; /* Default: hidden setups safe formats triggers configs setups */
+          opacity: 0.95; /* Continuous glowing ring on ALL cards setups safe formats triggers configs setups */
           z-index: 0; pointer-events: none; mix-blend-mode: screen;
           transition: opacity 0.3s ease;
         }
-        .ko-pricing-card:hover .ko-laser { opacity: 0.8; }
-        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } 
 
         .ko-pricing-card-inner {
           position: relative; background: #09090b; border-radius: 19px;
