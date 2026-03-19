@@ -311,10 +311,12 @@ export default function LandingPage({ onGetStarted }: Props) {
           position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
           background: conic-gradient(from 0deg, #ff007f, #7000ff, #00e5ff, #ff007f);
           animation: ko-spin 6s linear infinite; 
-          opacity: 0.95; /* Continuous glowing ring on ALL cards setups safe formats triggers configs setups */
+          opacity: 0; /* Default: hidden setups safe formats triggers configs setups */
           z-index: 0; pointer-events: none; mix-blend-mode: screen;
           transition: opacity 0.3s ease;
         }
+        .ko-pricing-card:hover .ko-laser { opacity: 0.8; }
+        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } 
 
         .ko-pricing-card-inner {
           position: relative; background: #09090b; border-radius: 19px;
@@ -322,39 +324,38 @@ export default function LandingPage({ onGetStarted }: Props) {
           display: flex; flex-direction: column;
         }
 
-        /* ── Bottom CTA Arches ── */
-        @keyframes ko-arch-float {
-          0%, 100% { transform: translate(0, 0) rotate(0deg); }
-          50%       { transform: translate(15px, -15px) rotate(2deg); }
+        /* ── Bottom CTA Ambient Orbs ── */
+        .ko-bottom-orb-1 {
+          position: absolute; width: 450px; height: 450px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+          filter: blur(50px); pointer-events: none;
+          left: -150px; bottom: -100px;
+          animation: ko-orb-float-1 12s ease-in-out infinite; z-index: 0;
+        }
+        .ko-bottom-orb-2 {
+          position: absolute; width: 400px; height: 400px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(45,212,191,0.15) 0%, transparent 70%);
+          filter: blur(40px); pointer-events: none;
+          right: -100px; top: -100px;
+          animation: ko-orb-float-2 14s ease-in-out 2s infinite reverse; z-index: 0;
+        }
+        @keyframes ko-orb-float-1 {
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33%     { transform: translate(20px, -20px) scale(1.05); }
+          66%     { transform: translate(-10px, 10px) scale(0.98); }
+        }
+        @keyframes ko-orb-float-2 {
+          0%,100% { transform: translate(0px, 0px) scale(1); }
+          33%     { transform: translate(-20px, 15px) scale(1.08); }
+          66%     { transform: translate(15px, -15px) scale(0.95); }
         }
         .ko-bottom-cta {
           position: relative; overflow: hidden; background: #040405;
           padding: 120px 60px; text-align: center;
           border-top: 1px solid rgba(255,255,255,0.04);
-          /* Transparent Mesh Grid structural backdrop config presets */
           background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
                             linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
           background-size: 40px 40px;
-        }
-        .ko-arch {
-          position: absolute; border-radius: 50%; pointer-events: none;
-          mix-blend-mode: screen;
-        }
-        .ko-arch-1 {
-          width: 500px; height: 500px;
-          border: 45px solid rgba(124,58,237,0.5); /* increased opacity */
-          border-bottom-color: transparent; border-left-color: transparent;
-          filter: blur(4px); /* much sharper outline edge */
-          left: -250px; bottom: -100px;
-          animation: ko-arch-float 8s ease-in-out infinite;
-        }
-        .ko-arch-2 {
-          width: 500px; height: 500px;
-          border: 45px solid rgba(139,92,246,0.4);
-          border-top-color: transparent; border-right-color: transparent;
-          filter: blur(4px);
-          right: -250px; top: -100px;
-          animation: ko-arch-float 10s ease-in-out infinite reverse;
         }
         /* ── Stat Cards ── */
         @keyframes ko-stat-in {
@@ -684,11 +685,11 @@ export default function LandingPage({ onGetStarted }: Props) {
         </div>
       </div>
 
-      {/* ── ABOUT / CTA (Glowing Arches) ── */}
+      {/* ── ABOUT / CTA (Glowing Orbs) ── */}
       <div id="about" className="ko-bottom-cta">
-        {/* Glow Arches Background */}
-        <div className="ko-arch ko-arch-1" />
-        <div className="ko-arch ko-arch-2" />
+        {/* Glow Orbs Background */}
+        <div className="ko-bottom-orb-1" />
+        <div className="ko-bottom-orb-2" />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 650, margin: '0 auto' }}>
           {/* Small Floating pill tag */}
