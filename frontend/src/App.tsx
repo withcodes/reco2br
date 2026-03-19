@@ -74,13 +74,22 @@ function App() {
   if (user) {
     const plan = profile?.plan || 'starter';
     const planMeta = PLAN_META[plan] || PLAN_META.starter;
-    const firmName = profile?.firm_name || user.email || 'Your Firm';
+    const firmName = profile?.firm_name || 'Your Firm';
 
     const renderContent = () => {
       switch (activeTab) {
         case 'dashboard':
           return (
             <>
+              <div style={{ background: '#ffffff', borderRadius: 24, padding: '36px 44px', position: 'relative', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 24px rgba(0,0,0,0.02)', marginBottom: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 190 }}>
+                <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 6px', fontWeight: 500, letterSpacing: '0.5px' }}>{user.email} · FY 2025-26</p>
+                <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', margin: '0 0 12px', letterSpacing: '-0.8px' }}>Welcome back, {firmName} 👋</h1>
+                <p style={{ fontSize: 14, color: '#64748b', margin: 0, maxWidth: 460, lineHeight: 1.6 }}>KnightOwl is ready to automate your GST reconciliation for today. Let's save some hours!</p>
+                {/* Floating Bear Illustration */}
+                <div style={{ position: 'absolute', right: 20, bottom: -15, width: 230, height: 230, zIndex: 1 }}>
+                  <img src="/cute_bear.png" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+              </div>
               <DashboardStats summary={summary} />
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
                 <div className="lg:col-span-1">
