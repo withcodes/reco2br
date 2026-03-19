@@ -356,7 +356,9 @@ export default function LandingPage({ onGetStarted }: Props) {
 
         .ko-stat-card-inner {
           position: relative;
-          background: #09090b; /* Deep card background inside */
+          background: rgba(9, 9, 11, 0.75); /* Translucent dark sheet for glass setups formats safely */
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
           border-radius: 19px;
           padding: 36px 24px;
           height: 100%;
@@ -364,6 +366,8 @@ export default function LandingPage({ onGetStarted }: Props) {
           display: flex;
           flex-direction: column;
           align-items: center; justify-content: center;
+          border: 1px solid rgba(255,255,255,0.03); /* Soft inner glaze outline frameworks safe */
+          box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.05); /* Top specular shine formats configurations */
         }
         
         .ko-stat-icon-box {
