@@ -310,21 +310,16 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-pricing-card .ko-laser {
           position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
           background: conic-gradient(from 0deg, #ff007f, #7000ff, #00e5ff, #ff007f);
-          animation: ko-spin 6s linear infinite; /* Slightly slower for elegance setups */
-          opacity: 0; z-index: 0; pointer-events: none; mix-blend-mode: screen;
+          animation: ko-spin 6s linear infinite; 
+          opacity: 0.95; /* Continuous glowing ring on ALL cards setups safe formats triggers configs setups */
+          z-index: 0; pointer-events: none; mix-blend-mode: screen;
           transition: opacity 0.3s ease;
         }
-        .ko-pricing-card:hover .ko-laser { opacity: 0.8; }
-        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } 
 
         .ko-pricing-card-inner {
           position: relative; background: #09090b; border-radius: 19px;
           padding: 32px; height: 100%; z-index: 1;
           display: flex; flex-direction: column;
-        }
-        .ko-pricing-card.is-highlight .ko-pricing-card-inner {
-          background: rgba(79,70,229,0.06); /* Maintain light backing setups safe */
-          backdrop-filter: blur(12px);
         }
 
         /* ── Bottom CTA Arches ── */
