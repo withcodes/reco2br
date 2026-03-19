@@ -309,13 +309,13 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-pricing-card .ko-laser {
           position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-          background: conic-gradient(from 0deg, transparent 40%, #818cf8 48%, #34d399 52%, transparent 60%);
-          animation: ko-spin 4s linear infinite;
+          background: conic-gradient(from 0deg, #ff007f, #7000ff, #00e5ff, #ff007f);
+          animation: ko-spin 6s linear infinite; /* Slightly slower for elegance setups */
           opacity: 0; z-index: 0; pointer-events: none; mix-blend-mode: screen;
           transition: opacity 0.3s ease;
         }
         .ko-pricing-card:hover .ko-laser { opacity: 0.8; }
-        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } /* Continuous shine triggers safe */
+        .ko-pricing-card.is-highlight .ko-laser { opacity: 0.95; } 
 
         .ko-pricing-card-inner {
           position: relative; background: #09090b; border-radius: 19px;
