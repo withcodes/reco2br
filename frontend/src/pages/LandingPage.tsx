@@ -96,8 +96,6 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
   const stat1 = useCountUp(60, 3200);       // 60+ hours
-  const stat2 = useCountUp(175000, 3400);   // ₹1.75L
-  const stat3 = useCountUp(992, 3600);      // 99.2%
 
   const hours = stat1 ? stat1.toLocaleString() : "0";
 
