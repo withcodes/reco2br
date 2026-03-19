@@ -475,6 +475,27 @@ export default function LandingPage({ onGetStarted }: Props) {
         }
         .ko-feature-card:hover .ko-laser { opacity: 1; }
 
+        /* ── Title Shimmer & Glows ── */
+        .ko-shimmer-text {
+          background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          background-size: 200% auto;
+          animation: ko-shimmer 4s linear infinite;
+        }
+        
+        .ko-title-glow {
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          width: 250px; height: 120px;
+          background: radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%);
+          filter: blur(24px);
+          z-index: -1;
+          pointer-events: none;
+        }
+
         .ko-feature-card::before {
           content: '';
           position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -561,8 +582,10 @@ export default function LandingPage({ onGetStarted }: Props) {
       {/* ── FEATURES ── */}
       <div id="features" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 60px 100px' }}>
         <p style={{ textAlign: 'center', fontSize: 12, fontWeight: 600, letterSpacing: 3, color: '#818cf8', textTransform: 'uppercase', marginBottom: 16 }}>Everything you need</p>
-        <h2 style={{ textAlign: 'center', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 700, letterSpacing: '-0.8px', marginBottom: 60, color: '#fafafa' }}>
-          The only GST tool built<br />specifically for CA firms
+        <h2 style={{ textAlign: 'center', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 60, color: '#ffffff', position: 'relative' }}>
+          The only GST tool built<br />
+          <span className="ko-shimmer-text">specifically for CA firms</span>
+          <div className="ko-title-glow" />
         </h2>
         <div ref={featuresGridRef} onMouseMove={handleMouseMoveFeatures} className={`ko-feature-grid ${gridVisible ? 'is-visible' : ''}`} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
           {FEATURES.map((f, i) => (
