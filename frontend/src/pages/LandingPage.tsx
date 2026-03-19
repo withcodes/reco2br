@@ -439,7 +439,7 @@ export default function LandingPage({ onGetStarted }: Props) {
           top: -50%; left: -50%; width: 200%; height: 200%;
           background: conic-gradient(from 0deg, transparent 40%, rgba(129,140,248,0.8) 48%, rgba(236,72,153,0.8) 52%, transparent 60%);
           animation: ko-spin 3.5s linear infinite;
-          opacity: 0;
+          opacity: 0.5; /* Permanent soft glow setups context properly setups binders setups */
           transition: opacity 0.4s ease;
           z-index: 0;
           pointer-events: none;
