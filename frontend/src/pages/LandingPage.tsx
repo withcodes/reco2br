@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone } from 'lucide-react';
+import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone, Clock, Brain } from 'lucide-react';
 
 interface Props { onGetStarted: () => void; }
 
@@ -57,9 +57,10 @@ interface StatCardProps {
   formatFn?: (n: number) => string;
   value?: string;
   label: React.ReactNode;
+  icon: React.ComponentType<{ size?: number; color?: string; fill?: string }>;
 }
 
-function StatCard({ className, delay, numericTarget, formatFn, value, label }: StatCardProps) {
+function StatCard({ className, delay, numericTarget, formatFn, value, label, icon: Icon }: StatCardProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
@@ -85,10 +86,16 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
 
   return (
     <div ref={ref} className={className} style={{ animationDelay: delay }}>
-      <span className="ko-stat-val">
-        {numericTarget && formatFn ? formatFn(count) : value}
-      </span>
-      {label}
+      <div className="ko-laser" />
+      <div className="ko-stat-card-inner">
+        <div className="ko-stat-icon-box">
+          <Icon size={16} />
+        </div>
+        <span className="ko-stat-val">
+          {numericTarget && formatFn ? formatFn(count) : value}
+        </span>
+        {label}
+      </div>
     </div>
   );
 }
@@ -326,32 +333,53 @@ export default function LandingPage({ onGetStarted }: Props) {
           to   { opacity: 1; transform: translateY(0); }
         }
         .ko-stat-card {
-          position: relative; padding: 36px 24px; border-radius: 20px;
-          backdrop-filter: blur(16px);
-          text-align: center; overflow: hidden; /* clip top bar overflow */
-          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1);
+          position: relative; padding: 1px; border-radius: 20px;
+          overflow: hidden;
+          background: rgba(255,255,255,0.05); 
+          transition: transform 0.3s ease;
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
-          border: 1px solid rgba(255,255,255,0.06);
-          background: rgba(255,255,255,0.02);
         }
-        .ko-stat-card:hover {
-          transform: translateY(-6px);
-          background: rgba(255,255,255,0.04);
+        .ko-stat-card:hover { transform: translateY(-5px); }
+        
+        /* Continuous laser border for STATS */
+        .ko-stat-card .ko-laser {
+          position: absolute;
+          top: -50%; left: -50%; width: 200%; height: 200%;
+          background: conic-gradient(from 0deg, transparent 40%, var(--stat-color, #818cf8) 48%, var(--stat-glow, #ec4899) 52%, transparent 60%);
+          animation: ko-spin 4s linear infinite;
+          opacity: 0.6; /* Continuous glow setups safe formats triggers configs setups */
+          z-index: 0;
+          pointer-events: none;
+          mix-blend-mode: screen;
+        }
+        .ko-stat-card:hover .ko-laser { opacity: 0.9; }
+
+        .ko-stat-card-inner {
+          position: relative;
+          background: #09090b; /* Deep card background inside */
+          border-radius: 19px;
+          padding: 36px 24px;
+          height: 100%;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center; justify-content: center;
         }
         
-        /* ── Top Gradient Accent Border (Option 2) ── */
-        .ko-stat-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; height: 3px;
-          background: var(--stat-accent, linear-gradient(90deg, #f43f5e, #f97316));
-          z-index: 2;
+        .ko-stat-icon-box {
+          position: absolute; top: 14px; right: 14px;
+          width: 30px; height: 30px; border-radius: 8px;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.06);
+          display: flex; align-items: center; justify-content: center;
+          color: var(--stat-color, #818cf8);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-
-        .ko-stat-s1 { --stat-accent: linear-gradient(90deg, #f43f5e, #f97316); }
-        .ko-stat-s2 { --stat-accent: linear-gradient(90deg, #06b6d4, #3b82f6); }
-        .ko-stat-s3 { --stat-accent: linear-gradient(90deg, #6366f1, #a855f7); }
-        .ko-stat-s4 { --stat-accent: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        
+        .ko-stat-s1 { --stat-color: #f43f5e; --stat-glow: #f97316; }
+        .ko-stat-s2 { --stat-color: #00d2ff; --stat-glow: #3a7bd5; }
+        .ko-stat-s3 { --stat-color: #8e2de2; --stat-glow: #4a00e0; }
+        .ko-stat-s4 { --stat-color: #f12711; --stat-glow: #f5af19; }
 
         /* Ambient Glow Layers behind cards */
         .ko-stat-card::after {
@@ -524,10 +552,10 @@ export default function LandingPage({ onGetStarted }: Props) {
 
       {/* ── STATS ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, maxWidth: 960, margin: '0 auto 100px', padding: '0 40px' }}>
-        <StatCard delay="0.05s" className="ko-stat-card ko-stat-s1" numericTarget={60} formatFn={(n) => `${n}+`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Hours saved per<br /><strong style={{ color: '#fbbf24' }}>firm/month</strong></p>} />
-        <StatCard delay="0.15s" className="ko-stat-card ko-stat-s2" numericTarget={175} formatFn={(n) => `₹${(n / 100).toFixed(2)}L`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>} />
-        <StatCard delay="0.25s" className="ko-stat-card ko-stat-s3" numericTarget={992} formatFn={(n) => `${(n / 10).toFixed(1)}%`} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>} />
-        <StatCard delay="0.35s" className="ko-stat-card ko-stat-s4" value="3-pass" label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>} />
+        <StatCard delay="0.05s" className="ko-stat-card ko-stat-s1" numericTarget={60} formatFn={(n) => `${n}+`} icon={Clock} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Hours saved per<br /><strong style={{ color: '#fbbf24' }}>firm/month</strong></p>} />
+        <StatCard delay="0.15s" className="ko-stat-card ko-stat-s2" numericTarget={175} formatFn={(n) => `₹${(n / 100).toFixed(2)}L`} icon={Zap} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>} />
+        <StatCard delay="0.25s" className="ko-stat-card ko-stat-s3" numericTarget={992} formatFn={(n) => `${(n / 10).toFixed(1)}%`} icon={CheckCircle} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>} />
+        <StatCard delay="0.35s" className="ko-stat-card ko-stat-s4" value="3-pass" icon={Brain} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>} />
       </div>
 
       {/* ── FEATURES ── */}
