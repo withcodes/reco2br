@@ -476,7 +476,7 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-feature-card:hover .ko-laser { opacity: 1; }
 
         /* ── Title Shimmer & Glows ── */
-        .ko-shimmer-text {
+        .ko-feature-shimmer {
           background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -584,7 +584,7 @@ export default function LandingPage({ onGetStarted }: Props) {
         <p style={{ textAlign: 'center', fontSize: 12, fontWeight: 600, letterSpacing: 3, color: '#818cf8', textTransform: 'uppercase', marginBottom: 16 }}>Everything you need</p>
         <h2 style={{ textAlign: 'center', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 60, color: '#ffffff', position: 'relative' }}>
           The only GST tool built<br />
-          <span className="ko-shimmer-text">specifically for CA firms</span>
+          <span className="ko-feature-shimmer">specifically for CA firms</span>
           <div className="ko-title-glow" />
         </h2>
         <div ref={featuresGridRef} onMouseMove={handleMouseMoveFeatures} className={`ko-feature-grid ${gridVisible ? 'is-visible' : ''}`} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
