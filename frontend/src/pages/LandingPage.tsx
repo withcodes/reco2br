@@ -69,7 +69,7 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
       if (entry.isIntersecting && !started.current && numericTarget) {
         started.current = true;
         const start = performance.now();
-        const duration = 2200;
+        const duration = 1200;
         const step = (now: number) => {
           const elapsed = now - start;
           const progress = Math.min(elapsed / duration, 1);
@@ -326,32 +326,32 @@ export default function LandingPage({ onGetStarted }: Props) {
           to   { opacity: 1; transform: translateY(0); }
         }
         .ko-stat-card {
-          position: relative; padding: 40px 28px; border-radius: 24px;
+          position: relative; padding: 36px 24px; border-radius: 20px;
           backdrop-filter: blur(16px);
-          text-align: center; overflow: visible; /* glow bleeds out */
-          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1), transform 0.3s ease;
+          text-align: center; overflow: hidden; /* clip top bar overflow */
+          transition: transform 0.3s cubic-bezier(0.25,1,0.5,1);
           animation: ko-stat-in 0.8s cubic-bezier(0.16,1,0.3,1) both;
-          border: 1.5px solid transparent;
-          background-clip: padding-box, border-box;
-          background-origin: padding-box, border-box;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.02);
         }
         .ko-stat-card:hover {
-          transform: translateY(-8px) scale(1.02);
+          transform: translateY(-6px);
+          background: rgba(255,255,255,0.04);
+        }
+        
+        /* ── Top Gradient Accent Border (Option 2) ── */
+        .ko-stat-card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; height: 3px;
+          background: var(--stat-accent, linear-gradient(90deg, #f43f5e, #f97316));
+          z-index: 2;
         }
 
-        /* Continuous Gradient Borders (Mockup Style) */
-        .ko-stat-s1 { 
-          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #f43f5e, #f97316); 
-        }
-        .ko-stat-s2 { 
-          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #06b6d4, #3b82f6); 
-        }
-        .ko-stat-s3 { 
-          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #6366f1, #a855f7); 
-        }
-        .ko-stat-s4 { 
-          background-image: linear-gradient(#070708, #070708), linear-gradient(135deg, #fbbf24, #f59e0b); 
-        }
+        .ko-stat-s1 { --stat-accent: linear-gradient(90deg, #f43f5e, #f97316); }
+        .ko-stat-s2 { --stat-accent: linear-gradient(90deg, #06b6d4, #3b82f6); }
+        .ko-stat-s3 { --stat-accent: linear-gradient(90deg, #6366f1, #a855f7); }
+        .ko-stat-s4 { --stat-accent: linear-gradient(90deg, #fbbf24, #f59e0b); }
 
         /* Ambient Glow Layers behind cards */
         .ko-stat-card::after {
