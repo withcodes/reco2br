@@ -500,13 +500,14 @@ export default function LandingPage({ onGetStarted }: Props) {
           50%       { text-shadow: 0 0 18px rgba(251,191,36,0.45); }
         }
         .ko-stat-val {
-          font-size: 44px; font-weight: 800; letter-spacing: -1.5px;
+          font-size: 52px; font-weight: 800; letter-spacing: -2.5px;
           background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #fbbf24 100%);
           background-size: 200% auto;
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
           background-clip: text;
+          font-variant-numeric: tabular-nums; /* fixes width roll triggers safe layout formats setup */
           animation: ko-shimmer 4s linear infinite, ko-number-glow 2s ease-in-out infinite;
-          margin: 0 0 8px; display: block;
+          margin: 0 0 4px; display: block;
         }
         /* ── Hover Glow placeholder if needed ── */
       `}</style>
