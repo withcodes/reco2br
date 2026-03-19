@@ -406,7 +406,12 @@ export default function LandingPage({ onGetStarted }: Props) {
           50% { transform: translateY(-4px); }
         }
         .ko-feature-card-inner {
+          position: relative;
           height: 100%;
+          background: rgba(9,9,11,0.95); /* Swallows laser bleed with transparent dark depth balance */
+          border-radius: 15px;
+          padding: 27px; /* 1px less to maintain relative container density offset safely */
+          z-index: 1;
           animation: ko-float 4s ease-in-out infinite;
         }
         .ko-feature-grid .ko-feature-card:nth-child(1) .ko-feature-card-inner { animation-delay: 0s; }
@@ -415,6 +420,32 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-feature-grid .ko-feature-card:nth-child(4) .ko-feature-card-inner { animation-delay: 1.8s; }
         .ko-feature-grid .ko-feature-card:nth-child(5) .ko-feature-card-inner { animation-delay: 2.4s; }
         .ko-feature-grid .ko-feature-card:nth-child(6) .ko-feature-card-inner { animation-delay: 3s; }
+
+        /* ── Conic Laser Border Stream (Option C) ── */
+        @keyframes ko-spin {
+          100% { transform: rotate(360deg); }
+        }
+        .ko-feature-card {
+          position: relative; 
+          border-radius: 16px; 
+          overflow: hidden; 
+          padding: 1px; /* 1px border reveal gap frame formats sets setups */
+          background: rgba(255,255,255,0.06); 
+          transition: transform 0.3s ease;
+          border: none; /* override previous border definitions safe formats setup */
+        }
+        .ko-laser {
+          position: absolute;
+          top: -50%; left: -50%; width: 200%; height: 200%;
+          background: conic-gradient(from 0deg, transparent 40%, rgba(129,140,248,0.8) 48%, rgba(236,72,153,0.8) 52%, transparent 60%);
+          animation: ko-spin 3.5s linear infinite;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          z-index: 0;
+          pointer-events: none;
+          mix-blend-mode: screen; /* bright vibrant contrast triggers setups configurations */
+        }
+        .ko-feature-card:hover .ko-laser { opacity: 1; }
 
         .ko-feature-card::before {
           content: '';
@@ -508,6 +539,7 @@ export default function LandingPage({ onGetStarted }: Props) {
         <div ref={featuresGridRef} onMouseMove={handleMouseMoveFeatures} className={`ko-feature-grid ${gridVisible ? 'is-visible' : ''}`} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
           {FEATURES.map((f, i) => (
             <div key={i} className="ko-feature-card">
+              <div className="ko-laser" />
               <div className="ko-feature-card-inner">
                 <div className="ko-feature-icon-box">
                   <f.icon size={20} color="#818cf8" />
