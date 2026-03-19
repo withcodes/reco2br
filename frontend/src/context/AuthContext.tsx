@@ -65,12 +65,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) return { error: error.message };
     // Insert profile row
     if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id, email,
-        firm_name: firmName, firm_id: firmId,
-        role: 'admin', plan: 'starter',
+      const profileData = {
+        id: data.user.id,
+        email,
+        firm_name: firmName,
+        firm_id: firmId,
+        role: 'admin',
+        plan: 'starter',
         created_at: new Date().toISOString(),
-      });
+      };
+      await supabase.from('profiles').upsert(profileData);
+      setProfile(profileData as UserProfile);
     }
     return { error: null };
   };
