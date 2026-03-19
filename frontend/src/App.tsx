@@ -6,7 +6,7 @@ import Sidebar from './components/Sidebar';
 import { DashboardStats } from './components/DashboardStats';
 import FileUploadArea from './components/FileUploadArea';
 import ReconciliationGrid from './components/ReconciliationGrid';
-import MonthlyDeltaView from './components/MonthlyDeltaView';
+import MonthlyDeltaView, { type MonthlyDelta } from './components/MonthlyDeltaView';
 import ClientManager from './components/ClientManager';
 import SupplierHealth from './components/SupplierHealth';
 import DueDateCalendar from './components/DueDateCalendar';
@@ -42,9 +42,10 @@ function App() {
   const [view, setView] = useState<View>('landing');
 
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
   const [data,    setData]    = useState<ReconciledItem[] | null>(null);
   const [summary, setSummary] = useState<SummaryStats | null>(null);
-  const [monthly, setMonthly] = useState<any[] | null>(null);
+  const [monthly, setMonthly] = useState<MonthlyDelta[] | null>(null);
 
   const handleVoucherSaved = useCallback((id: number) => {
     setData(prev => prev ? prev.map(r => r.id === id ? { ...r, status: 'Manual-Matched' } : r) : prev);
@@ -104,7 +105,7 @@ function App() {
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => setActiveTab('gstr2b')} className="w-full mt-5 py-2 text-xs font-medium rounded-lg" style={{ color: 'var(--text-accent)', background: 'var(--bg-hover)' }}>
+                    <button onClick={() => setActiveTab('gstr2b')} className="btn-ghost btn-sm w-full mt-5 justify-center">
                       Run Reconciliation →
                     </button>
                   </div>
@@ -124,7 +125,7 @@ function App() {
                 <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Compare Sales Register (Tally) vs GSTR-1 filed on Portal</p>
               </div>
               <FileUploadArea mode="gstr1" onReconciliationComplete={handleReconciliationComplete} />
-              <ReconciliationGrid liveData={data} summary={summary} onVoucherSaved={handleVoucherSaved} />
+              <ReconciliationGrid liveData={data} summary={summary} onVoucherSaved={handleVoucherSaved} globalSearch={searchQuery} />
             </>
           );
         case 'gstr2b':
@@ -135,7 +136,7 @@ function App() {
                 <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Compare Purchase Register (Tally) vs GSTR-2B available on Portal</p>
               </div>
               <FileUploadArea mode="gstr2b" onReconciliationComplete={handleReconciliationComplete} />
-              <ReconciliationGrid liveData={data} summary={summary} onVoucherSaved={handleVoucherSaved} />
+              <ReconciliationGrid liveData={data} summary={summary} onVoucherSaved={handleVoucherSaved} globalSearch={searchQuery} />
             </>
           );
         case 'monthly':
@@ -170,7 +171,7 @@ function App() {
                 <div className="glass-card p-5">
                   <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>Plan Usage</p>
                   <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Upgrade for more clients and features.</p>
-                  <button className="btn-primary mt-4 text-sm py-2">Upgrade Plan</button>
+                  <button className="btn-primary btn-sm mt-4">Upgrade Plan</button>
                 </div>
               </div>
               <button onClick={signOut} className="mt-8 flex items-center gap-2 text-sm" style={{ color: '#f43f5e', background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -193,10 +194,10 @@ function App() {
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{user.email} · FY 2025-26</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ position: 'relative' }}>
-                <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                <input type="text" placeholder="Search GSTIN or client…" className="field-input" style={{ paddingLeft: 32, paddingRight: 12, paddingTop: 7, paddingBottom: 7, fontSize: '0.8rem', width: 220 }} />
-              </div>
+            <div style={{ position: 'relative' }}>
+              <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input type="text" placeholder="Search GSTIN or client…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="field-input" style={{ paddingLeft: 32, paddingRight: 12, paddingTop: 7, paddingBottom: 7, fontSize: '0.8rem', width: 220 }} />
+            </div>
               <button style={{ padding: 7, borderRadius: 10, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
                 <Bell size={18} style={{ color: 'var(--text-secondary)' }} />
               </button>

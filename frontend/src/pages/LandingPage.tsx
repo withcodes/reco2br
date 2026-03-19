@@ -96,7 +96,33 @@ function StatCard({ className, delay, numericTarget, formatFn, value, label }: S
 export default function LandingPage({ onGetStarted }: Props) {
   const [billingAnnual, setBillingAnnual] = useState(false);
   const stat1 = useCountUp(60, 3200);       // 60+ hours
-  const hours = stat1; // alias for hero
+  const stat2 = useCountUp(175000, 3400);   // ₹1.75L
+  const stat3 = useCountUp(992, 3600);      // 99.2%
+
+  const hours = stat1 ? stat1.toLocaleString() : "0";
+
+  const featuresGridRef = useRef<HTMLDivElement>(null);
+  const [gridVisible, setGridVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setGridVisible(true);
+    }, { threshold: 0.05 });
+    if (featuresGridRef.current) observer.observe(featuresGridRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleMouseMoveFeatures = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!featuresGridRef.current) return;
+    const cards = featuresGridRef.current.querySelectorAll('.ko-feature-card');
+    cards.forEach((card: any) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  };
 
   return (
     <div style={{ background: '#09090b', minHeight: '100vh', color: '#fafafa', fontFamily: 'Inter, sans-serif' }}>
@@ -118,8 +144,8 @@ export default function LandingPage({ onGetStarted }: Props) {
           <a href="#about"   style={{ color: '#a1a1aa', textDecoration: 'none' }}>About</a>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={onGetStarted} style={{ padding: '9px 20px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#fafafa', fontSize: 14, cursor: 'pointer' }}>Log in</button>
-          <button onClick={onGetStarted} style={{ padding: '9px 20px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button onClick={onGetStarted} className="btn-ghost" style={{ padding: '9px 20px', fontSize: 14 }}>Log in</button>
+          <button onClick={onGetStarted} className="btn-primary" style={{ padding: '9px 20px', fontSize: 14, fontWeight: 600 }}>
             Start free trial <ArrowRight size={14} />
           </button>
         </div>
@@ -347,11 +373,71 @@ export default function LandingPage({ onGetStarted }: Props) {
         .ko-stat-s2::after { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
         .ko-stat-s3::after { background: linear-gradient(135deg, #6366f1, #a855f7); }
         .ko-stat-s4::after { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
-        .ko-stat-card:hover::before { height: 4px; filter: brightness(1.1); }
-        .ko-stat-s1::before { background: linear-gradient(90deg, #7c3aed, #4f46e5); }
-        .ko-stat-s2::before { background: linear-gradient(90deg, #10b981, #34d399); }
-        .ko-stat-s3::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-        .ko-stat-s4::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        /* ── Feature Cards ── */
+        .ko-feature-card {
+          position: relative; padding: 28px; border-radius: 16px; 
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.02); overflow: hidden;
+          transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .ko-feature-card:hover {
+          border-color: rgba(255,255,255,0.15);
+          transform: translateY(-5px);
+          background: rgba(255,255,255,0.04);
+        }
+
+        /* ── Reveal Entrance Animation (Option A) ── */
+        @keyframes ko-reveal-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .ko-feature-card { opacity: 0; }
+        .ko-feature-grid.is-visible .ko-feature-card {
+          animation: ko-reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .ko-feature-grid.is-visible .ko-feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* ── Ambient Float Animation (Option B) ── */
+        @keyframes ko-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+        .ko-feature-card-inner {
+          height: 100%;
+          animation: ko-float 4s ease-in-out infinite;
+        }
+        .ko-feature-grid .ko-feature-card:nth-child(1) .ko-feature-card-inner { animation-delay: 0s; }
+        .ko-feature-grid .ko-feature-card:nth-child(2) .ko-feature-card-inner { animation-delay: 0.6s; }
+        .ko-feature-grid .ko-feature-card:nth-child(3) .ko-feature-card-inner { animation-delay: 1.2s; }
+        .ko-feature-grid .ko-feature-card:nth-child(4) .ko-feature-card-inner { animation-delay: 1.8s; }
+        .ko-feature-grid .ko-feature-card:nth-child(5) .ko-feature-card-inner { animation-delay: 2.4s; }
+        .ko-feature-grid .ko-feature-card:nth-child(6) .ko-feature-card-inner { animation-delay: 3s; }
+
+        .ko-feature-card::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+          border-radius: 16px;
+          background: radial-gradient(500px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(255,255,255,0.06), transparent 80%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none;
+        }
+        .ko-feature-card:hover::before { opacity: 1; }
+        
+        .ko-feature-icon-box {
+          width: 42px; height: 42px; border-radius: 12px; 
+          background: rgba(124,58,237,0.15); display: flex; 
+          align-items: center; justify-content: center; margin-bottom: 16px;
+          transition: transform 0.3s ease;
+        }
+        .ko-feature-card:hover .ko-feature-icon-box {
+          transform: translateY(-3px) scale(1.05);
+        }
         @keyframes ko-number-glow {
           0%, 100% { text-shadow: 0 0 8px rgba(251,191,36,0.15); }
           50%       { text-shadow: 0 0 18px rgba(251,191,36,0.45); }
@@ -372,7 +458,7 @@ export default function LandingPage({ onGetStarted }: Props) {
       <div style={{ position: 'relative' }}>
         <div className="ko-orb-1" />
         <div className="ko-orb-2" />
-        <div className="ko-orb-3" />
+        <div className="ko-orb-3" />  
         <div style={{ textAlign: 'center', padding: '100px 60px 80px', maxWidth: 860, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div className="ko-trust-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 18px', borderRadius: 99, border: '1px solid rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)', fontSize: 12, color: '#fbbf24', marginBottom: 32, fontWeight: 600, letterSpacing: '0.02em' }}>
             <span className="ko-trust-star"><Star size={12} fill="#fbbf24" color="#fbbf24" /></span>
@@ -421,14 +507,16 @@ export default function LandingPage({ onGetStarted }: Props) {
         <h2 style={{ textAlign: 'center', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 700, letterSpacing: '-0.8px', marginBottom: 60, color: '#fafafa' }}>
           The only GST tool built<br />specifically for CA firms
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+        <div ref={featuresGridRef} onMouseMove={handleMouseMoveFeatures} className={`ko-feature-grid ${gridVisible ? 'is-visible' : ''}`} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
           {FEATURES.map((f, i) => (
-            <div key={i} style={{ padding: '28px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.03)', transition: 'border-color 0.2s' }}>
-              <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(79,70,229,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <f.icon size={20} color="#818cf8" />
+            <div key={i} className="ko-feature-card">
+              <div className="ko-feature-card-inner">
+                <div className="ko-feature-icon-box">
+                  <f.icon size={20} color="#818cf8" />
+                </div>
+                <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 10px', color: '#fafafa' }}>{f.title}</h3>
+                <p style={{ fontSize: 14, color: '#71717a', margin: 0, lineHeight: 1.6 }}>{f.desc}</p>
               </div>
-              <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 10px', color: '#fafafa' }}>{f.title}</h3>
-              <p style={{ fontSize: 14, color: '#71717a', margin: 0, lineHeight: 1.6 }}>{f.desc}</p>
             </div>
           ))}
         </div>
@@ -472,9 +560,11 @@ export default function LandingPage({ onGetStarted }: Props) {
                     </div>
                   ))}
                 </div>
-                <button onClick={onGetStarted} style={{ width: '100%', padding: '12px', borderRadius: 12, border: plan.highlight ? 'none' : '1px solid rgba(255,255,255,0.2)', background: plan.highlight ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : 'transparent', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                  {plan.cta} <ArrowRight size={14} />
-                </button>
+                <div className="ko-glow-wrapper ko-glow-secondary" style={{ width: '100%', display: 'block' }}>
+                  <button onClick={onGetStarted} className="ko-glow-btn" style={{ width: '100%', justifyContent: 'center' }}>
+                    {plan.cta} <ArrowRight size={14} />
+                  </button>
+                </div>
               </div>
             );
           })}

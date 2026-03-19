@@ -22,7 +22,8 @@ export default function AuthPage({ onBack }: Props) {
     if (mode === 'register') {
       if (!firm)                { setError('Firm name is required.');         return; }
       if (!invite)              { setError('Beta invite code is required.');  return; }
-      if (invite !== 'KNIGHTOWL2026') { setError('Invalid invite code. Access is currently restricted.'); return; }
+      const validCode = import.meta.env.VITE_BETA_INVITE_CODE || '';
+      if (!validCode || invite !== validCode) { setError('Invalid invite code. Access is currently restricted.'); return; }
       if (password !== confirm) { setError('Passwords do not match.');        return; }
       if (password.length < 8)  { setError('Password must be at least 8 characters.'); return; }
     }
@@ -112,8 +113,7 @@ export default function AuthPage({ onBack }: Props) {
             </div>
           )}
 
-          <button onClick={handleSubmit} disabled={loading}
-            style={{ marginTop: 24, width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: loading ? 'rgba(79,70,229,0.5)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <button onClick={handleSubmit} disabled={loading} className="btn-primary w-full mt-6 py-3 text-base flex items-center justify-center gap-2">
             {loading ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Please wait…</> : mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
 

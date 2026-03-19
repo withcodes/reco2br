@@ -1,5 +1,5 @@
 import { apiPost } from '../utils/api';
-import { useState, useMemo, Fragment } from 'react';
+import { useState, useMemo, Fragment, useEffect } from 'react';
 import { Search, Filter, Download, Plus, Loader2, X, ChevronLeft, ChevronRight, CheckCircle, MinusCircle, Clock } from 'lucide-react';
 import type { ReconciledItem, SummaryStats } from '../App';
 import { STATUS_META, RECO_STATUSES, type RecoStatus } from '../utils/gst';
@@ -10,6 +10,7 @@ interface ReconciliationGridProps {
   liveData: ReconciledItem[] | null;
   summary:  SummaryStats   | null;
   onVoucherSaved?: (id: number) => void;
+  globalSearch?: string;
 }
 
 
@@ -24,7 +25,7 @@ const ACTION_META: Record<ActionStatus, { label: string; color: string; bg: stri
   'Pending': { label: 'Pending', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 };
 
-export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }: ReconciliationGridProps) {
+export default function ReconciliationGrid({ liveData, summary, onVoucherSaved, globalSearch }: ReconciliationGridProps) {
   const [search,        setSearch]        = useState('');
   const [activeFilters, setActiveFilters] = useState<RecoStatus[]>([]);
   const [voucherRow,    setVoucherRow]    = useState<ReconciledItem | null>(null);
@@ -57,13 +58,15 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
   const rows = useMemo(() => {
     if (!liveData) return [];
     const q = search.toLowerCase();
+    const gq = (globalSearch || '').toLowerCase();
     return liveData.filter(r => {
       const status = normalise(r.status);
       const matchQ = !q || [r.vendor, r.gstin, r.invoiceNo].some(v => v?.toLowerCase().includes(q));
+      const matchGQ = !gq || [r.vendor, r.gstin, r.invoiceNo].some(v => v?.toLowerCase().includes(gq));
       const matchF = activeFilters.length === 0 || activeFilters.includes(status);
-      return matchQ && matchF;
+      return matchQ && matchGQ && matchF;
     });
-  }, [liveData, search, activeFilters]);
+  }, [liveData, search, globalSearch, activeFilters]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
@@ -72,6 +75,8 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
   // Reset page when filters change
   const handleFilterToggle = (s: RecoStatus) => { toggleFilter(s); setPage(1); };
   const handleSearch = (v: string) => { setSearch(v); setPage(1); };
+
+  useEffect(() => { setPage(1); }, [globalSearch]);
 
   const fmt = (v: number) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
@@ -136,7 +141,7 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
                 </button>
               )}
             </div>
-            <button className="btn-primary py-2 px-4 text-xs" onClick={handleExport} disabled={isExporting || !liveData.length}>
+            <button className="btn-primary btn-sm" onClick={handleExport} disabled={isExporting || !liveData.length}>
               {isExporting ? <><Loader2 size={13} className="animate-spin" /> Exporting…</> : <><Download size={13} /> Export Excel</>}
             </button>
           </div>
@@ -182,7 +187,7 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
 
                 return (
                   <Fragment key={row.id}>
-                    <tr className="tbl-row cursor-pointer" onClick={() => toggleRow(row.id)}>
+                    <tr className="tbl-row cursor-pointer" onClick={() => toggleRow(row.id)} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(row.id); } }}>
                       <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{row.vendor}</td>
                       <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>{row.gstin}</td>
                       <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{row.invoiceNo}</td>
@@ -191,8 +196,8 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
                       <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--text-primary)' }}>{fmt(row.gstrAmount)}</td>
                       <td className="px-4 py-3"><span className={meta.pillClass}>{meta.label}</span></td>
                       <td className="px-4 py-3">
-                        {(row as any).category
-                          ? <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(99,102,241,0.1)', color: '#818cf8' }}>{(row as any).category}</span>
+                        {row.category
+                          ? <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(99,102,241,0.1)', color: '#818cf8' }}>{row.category}</span>
                           : <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>—</span>}
                       </td>
                       {/* Action Taken tracker */}
@@ -270,7 +275,7 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
               Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, rows.length)} of {rows.length} records
             </p>
             <div className="flex items-center gap-2">
-              <button className="btn-ghost px-3 py-1.5 text-xs flex items-center gap-1" disabled={page === 1}
+              <button className="btn-ghost btn-sm flex items-center gap-1" disabled={page === 1}
                 onClick={() => setPage(p => Math.max(1, p - 1))}>
                 <ChevronLeft size={14} /> Prev
               </button>
@@ -289,7 +294,7 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved }
                   </button>
                 );
               })}
-              <button className="btn-ghost px-3 py-1.5 text-xs flex items-center gap-1" disabled={page === totalPages}
+              <button className="btn-ghost btn-sm flex items-center gap-1" disabled={page === totalPages}
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}>
                 Next <ChevronRight size={14} />
               </button>
