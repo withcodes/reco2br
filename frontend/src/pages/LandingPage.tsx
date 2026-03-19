@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone, Clock, Brain } from 'lucide-react';
+import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone, Clock, Brain, Search, Bell, Plus, Calendar, Wallet } from 'lucide-react';
 
 interface Props { onGetStarted: () => void; }
 
@@ -605,6 +605,136 @@ export default function LandingPage({ onGetStarted }: Props) {
         <StatCard delay="0.15s" className="ko-stat-card ko-stat-s2" numericTarget={175} formatFn={(n) => `₹${(n / 100).toFixed(2)}L`} icon={Zap} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Avg ITC leakage<br /><strong style={{ color: '#34d399' }}>detected</strong></p>} />
         <StatCard delay="0.25s" className="ko-stat-card ko-stat-s3" numericTarget={992} formatFn={(n) => `${(n / 10).toFixed(1)}%`} icon={CheckCircle} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Match<br /><strong style={{ color: '#60a5fa' }}>accuracy</strong></p>} />
         <StatCard delay="0.35s" className="ko-stat-card ko-stat-s4" value="3-pass" icon={Brain} label={<p style={{ fontSize: 13, color: '#a1a1aa', margin: 0, lineHeight: 1.5 }}>Fuzzy matching<br /><strong style={{ color: '#fbbf24' }}>engine</strong></p>} />
+      </div>
+
+      {/* ── DASHBOARD MOCKUP ── */}
+      <div style={{ maxWidth: 1160, margin: '0 auto 120px', padding: '0 40px', position: 'relative' }}>
+        <style>{`
+          @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+          }
+          .ko-mockup-frame {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            overflow: hidden;
+            height: 640px;
+            box-shadow: 0 50px 100px -24px rgba(0,0,0,0.4), 0 0 50px rgba(129,140,248,0.12);
+            position: relative;
+            transform: perspective(1200px) rotateX(4deg);
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+          }
+          .ko-mockup-frame:hover {
+            transform: perspective(1200px) rotateX(0deg) translateY(-6px);
+            box-shadow: 0 60px 120px -20px rgba(0,0,0,0.5), 0 0 60px rgba(129,140,248,0.18);
+          }
+        `}</style>
+        
+        <div className="ko-mockup-frame">
+          {/* Left Sidebar */}
+          <div style={{ width: 72, borderRight: '1px solid #e2e8f0', background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 0', gap: 28 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+               <Shield size={18} color="white" />
+            </div>
+            <div style={{ color: '#4f46e5', background: '#f0f0ff', padding: 10, borderRadius: 12 }}><Zap size={18} /></div>
+            <div style={{ color: '#94a3b8', cursor: 'pointer' }}><Users size={18} /></div>
+            <div style={{ color: '#94a3b8', cursor: 'pointer' }}><FileCheck size={18} /></div>
+            <div style={{ color: '#94a3b8', cursor: 'pointer' }}><TrendingUp size={18} /></div>
+          </div>
+
+          {/* Main Workspace */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
+            {/* Top Bar */}
+            <div style={{ height: 68, borderBottom: '1px solid #e2e8f0', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#f1f5f9', padding: '8px 16px', borderRadius: 99, width: 250, border: '1px solid #e2e8f0' }}>
+                <Search size={14} color="#64748b" />
+                <span style={{ fontSize: 13, color: '#64748b' }}>Search...</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                <span style={{ fontSize: 13, color: '#64748b', fontWeight: 500 }}>3 August, 2026</span>
+                <div style={{ position: 'relative', color: '#64748b', cursor: 'pointer' }}>
+                   <Bell size={18} />
+                   <div style={{ position: 'absolute', top: -2, right: -2, width: 6, height: 6, background: '#ef4444', borderRadius: '50%' }} />
+                </div>
+                <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#ffedd5', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #ffffff', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                   <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            <div style={{ flex: 1, padding: 32, display: 'flex', gap: 24, overflow: 'hidden' }}>
+              {/* Left Column */}
+              <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {/* Greeting Card */}
+                <div style={{ background: '#ffffff', borderRadius: 24, padding: 36, position: 'relative', overflow: 'hidden', border: '1px solid #f1f5f9', height: 270, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <h1 style={{ fontSize: 36, fontWeight: 800, color: '#0f172a', margin: '0 0 10px', letterSpacing: '-1px' }}>Hi, George!</h1>
+                  <p style={{ fontSize: 15, color: '#64748b', margin: '0 0 24px', maxWidth: 220 }}>What are we doing today?</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, maxWidth: 300 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#475569' }}><div style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366f1' }} /> Check Calendar</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#475569' }}><div style={{ width: 6, height: 6, borderRadius: '50%', background: '#fbbf24' }} /> Manage Wallet</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#475569' }}><div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ef4444' }} /> Manage Workers</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#475569' }}><div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} /> Manage Projects</div>
+                  </div>
+                  {/* Floating Bear Illustration */}
+                  <div style={{ position: 'absolute', right: -10, bottom: -20, width: 290, height: 290, zIndex: 1, animation: 'float-slow 5s ease-in-out infinite' }}>
+                    <img src="/cute_bear.png" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  </div>
+                </div>
+
+                {/* Stat Grid Footer */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
+                  <div style={{ background: '#ffffff', borderRadius: 20, padding: 24, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 12, background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><Wallet size={18} /></div>
+                    <div>
+                      <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 4px', fontWeight: 500 }}>Potential Monthly Profit</p>
+                      <h3 style={{ fontSize: 26, fontWeight: 800, color: '#0f172a', margin: 0, letterSpacing: '-0.5px' }}>$24,042,000</h3>
+                    </div>
+                  </div>
+                  <div style={{ background: '#ffffff', borderRadius: 20, padding: 24, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 12, background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}><FileCheck size={18} /></div>
+                    <div>
+                      <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 4px', fontWeight: 500 }}>Workers Wage This Month</p>
+                      <h3 style={{ fontSize: 26, fontWeight: 800, color: '#0f172a', margin: 0, letterSpacing: '-0.5px' }}>$8,402,000</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button style={{ flex: 1, padding: '12px', borderRadius: 14, border: '1px solid #e2e8f0', background: '#ffffff', fontSize: 13, color: '#475569', fontWeight: 600, cursor: 'pointer' }}>By day</button>
+                  <button style={{ padding: '12px 20px', borderRadius: 14, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, border: 'none', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)' }}>Create new <Plus size={15} /></button>
+                </div>
+
+                <div style={{ flex: 1, background: '#ffffff', borderRadius: 24, padding: 28, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                     <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0 }}>Notifications</h3>
+                     <span style={{ fontSize: 12, color: '#4f46e5', fontWeight: 600, cursor: 'pointer' }}>See all</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px', background: '#f8fafc', borderRadius: 16, border: '1px solid #f1f5f9' }}>
+                       <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#ffedd5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', flexShrink: 0 }}><Zap size={15} /></div>
+                       <p style={{ fontSize: 12, color: '#475569', margin: 0, lineHeight: 1.5 }}>You've added new project recently, with no deadline.</p>
+                     </div>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px', background: '#f8fafc', borderRadius: 16, border: '1px solid #f1f5f9' }}>
+                       <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', flexShrink: 0 }}><Shield size={15} /></div>
+                       <p style={{ fontSize: 12, color: '#475569', margin: 0, lineHeight: 1.5 }}>Project owner Adam requested a refund.</p>
+                     </div>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px', background: '#f8fafc', borderRadius: 16, border: '1px solid #f1f5f9' }}>
+                       <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', flexShrink: 0 }}><Calendar size={15} /></div>
+                       <p style={{ fontSize: 12, color: '#475569', margin: 0, lineHeight: 1.5 }}>Today, it's Tatia's anniversary! Wish her happy birthday.</p>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── FEATURES ── */}
