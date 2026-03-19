@@ -504,13 +504,14 @@ export default function LandingPage({ onGetStarted }: Props) {
           50%       { text-shadow: 0 0 18px rgba(251,191,36,0.45); }
         }
         .ko-stat-val {
-          font-size: 44px; font-weight: 800; letter-spacing: -1.5px;
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #fbbf24 100%);
+          font-size: 48px; font-weight: 800; letter-spacing: -2px;
+          background: linear-gradient(135deg, var(--stat-color, #fbbf24) 0%, var(--stat-glow, #f59e0b) 100%);
           background-size: 200% auto;
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: ko-shimmer 4s linear infinite, ko-number-glow 2s ease-in-out infinite;
-          margin: 0 0 8px; display: block;
+          font-variant-numeric: tabular-nums; /* Stops number count wiggling safe setups */
+          animation: ko-shimmer 4s linear infinite;
+          margin: 0 0 6px; display: block;
         }
         /* ── Hover Glow placeholder if needed ── */
       `}</style>
