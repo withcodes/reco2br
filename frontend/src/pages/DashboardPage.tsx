@@ -9,7 +9,6 @@ import { formatLakh } from '../utils/gst';
 interface DashboardPageProps {
   user: User;
   firmName: string;
-  data: ReconciledItem[] | null;
   summary: SummaryStats | null;
   monthly: MonthlyDelta[] | null;
   setActiveTab: (tab: 'dashboard' | 'gstr1' | 'gstr2b' | 'monthly' | 'gstr3b' | 'clients' | 'team' | 'suppliers' | 'notices' | 'calendar' | 'settings') => void;
@@ -70,7 +69,7 @@ const AnalyticsChart = () => {
   );
 };
 
-export default function DashboardPage({ user, firmName, data, summary, monthly, setActiveTab, searchQuery, handleReconciliationComplete }: DashboardPageProps) {
+export default function DashboardPage({ user, firmName, summary, monthly, setActiveTab, searchQuery, handleReconciliationComplete }: DashboardPageProps) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }} 
@@ -104,10 +103,10 @@ export default function DashboardPage({ user, firmName, data, summary, monthly, 
             <h3 className="font-semibold text-base mb-4" style={{ color: 'var(--text-primary)' }}>Actionable Queue</h3>
             <div className="space-y-3">
               {(summary ? [
-                { text: `${summary.pendingInvoices || 0} Invoice discrepancies need review`, type: 'critical', action: 'gstr2b' },
-                { text: `₹${summary.itcAtRisk || 0} ITC at risk from mismatched entries`, type: 'warning', action: 'suppliers' }
+                { text: `${summary.pendingInvoices || 0} Invoice discrepancies need review`, type: 'critical', action: 'gstr2b' as const },
+                { text: `₹${summary.itcAtRisk || 0} ITC at risk from mismatched entries`, type: 'warning', action: 'suppliers' as const }
               ] : [
-                { text: `📥 No reconciliation dataset uploaded for FY 25-26`, type: 'info', action: 'gstr2b' }
+                { text: `📥 No reconciliation dataset uploaded for FY 25-26`, type: 'info', action: 'gstr2b' as const }
               ]).filter(a => a.text.toLowerCase().includes(searchQuery.toLowerCase()))
                .map((a, i) => (
                 <div key={i} onClick={() => setActiveTab(a.action)} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"

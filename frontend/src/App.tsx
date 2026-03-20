@@ -83,7 +83,6 @@ function App() {
             <DashboardPage 
               user={user} 
               firmName={firmName} 
-              data={data} 
               summary={summary} 
               monthly={monthly} 
               setActiveTab={setActiveTab} 
