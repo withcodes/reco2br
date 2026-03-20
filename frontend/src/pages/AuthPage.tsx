@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from 'react';
 import { Shield, Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -36,94 +37,169 @@ export default function AuthPage({ onBack }: Props) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#09090b', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      {/* Back button */}
-      <button onClick={onBack} style={{ position: 'fixed', top: 24, left: 24, display: 'flex', alignItems: 'center', gap: 6, color: '#a1a1aa', background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
-        <ArrowLeft size={16} /> Back to home
+    <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
+      
+      {/* Background blobs for light ambient feel */}
+      <div style={{ position: 'absolute', top: -100, left: -200, width: 400, height: 400, background: '#dbeafe', borderRadius: '50%', filter: 'blur(80px)', opacity: 0.6, zIndex: 0 }} />
+      <div style={{ position: 'absolute', bottom: -100, right: -200, width: 400, height: 400, background: '#eff6ff', borderRadius: '50%', filter: 'blur(80px)', opacity: 0.6, zIndex: 0 }} />
+
+      {/* Floating Back Button */}
+      <button onClick={onBack} style={{ position: 'fixed', top: 24, left: 24, display: 'flex', alignItems: 'center', gap: 6, color: '#64748b', background: '#ffffff', border: '1px solid #e2e8f0', padding: '8px 16px', borderRadius: '99px', cursor: 'pointer', fontSize: 13, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', zIndex: 10, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+         <ArrowLeft size={15} /> Back to home
       </button>
 
-      <div style={{ width: '100%', maxWidth: 420 }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-            <Shield size={28} color="white" />
+      {/* Main Container Card */}
+      <div style={{ width: '100%', maxWidth: 1020, height: 640, background: '#ffffff', borderRadius: 24, border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 50px 100px -20px rgba(0,0,0,0.12)', display: 'flex', overflow: 'hidden', position: 'relative', zIndex: 1 }}>
+        
+        {/* LEFT SIDE: Form */}
+        <div style={{ flex: 1, padding: '40px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
+          
+          {/* Logo & Headline */}
+          <div style={{ marginBottom: 36, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <Shield size={20} color="white" />
+            </div>
+            <h2 style={{ color: '#0f172a', fontSize: 18, fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>KnightOwl</h2>
           </div>
-          <h1 style={{ color: '#fafafa', fontSize: 24, fontWeight: 700, margin: '0 0 6px' }}>
-            Knight<span style={{ color: '#818cf8' }}>Owl</span> GST
-          </h1>
-          <p style={{ color: '#71717a', fontSize: 14, margin: 0 }}>
-            {mode === 'login' ? 'Sign in to your firm account' : 'Create your firm account'}
-          </p>
-        </div>
 
-        {/* Card */}
-        <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, padding: '36px 32px' }}>
-          {/* Tab switcher */}
-          <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: 10, padding: 3, marginBottom: 28 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', margin: '0 0 8px', letterSpacing: '-1px' }}>
+            {mode === 'login' ? 'Sign In' : 'Get Started'}
+          </h1>
+          <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 32px' }}>
+            Welcome to the AI-powered GST automated match dashboard.
+          </p>
+
+          {/* Toggle Tab */}
+          <div style={{ display: 'flex', background: '#f1f5f9', borderRadius: 12, padding: 4, marginBottom: 28 }}>
             {(['login', 'register'] as const).map(m => (
-              <button key={m} onClick={() => { setMode(m); setError(''); }} style={{ flex: 1, padding: '9px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 500, background: mode === m ? 'rgba(79,70,229,0.8)' : 'transparent', color: mode === m ? 'white' : '#71717a', transition: 'all 0.2s' }}>
-                {m === 'login' ? 'Sign In' : 'Register'}
+              <button key={m} onClick={() => { setMode(m); setError(''); }} style={{ flex: 1, padding: '10px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, background: mode === m ? '#ffffff' : 'transparent', color: mode === m ? '#0f172a' : '#64748b', transition: 'all 0.2s', boxShadow: mode === m ? '0 4px 12px rgba(0,0,0,0.05)' : 'none' }}>
+                {m === 'login' ? 'Log In' : 'Register'}
               </button>
             ))}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {mode === 'register' && (
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#a1a1aa', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Firm / Company Name</label>
-                <input value={firm} onChange={e => setFirm(e.target.value)} placeholder="e.g. Patel & Associates CA Firm"
-                  style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-              </div>
-            )}
+          {/* Actual Form Fields */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            
+            <AnimatePresence mode="wait">
+              {mode === 'register' && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 6 }}>FIRM / COMPANY NAME</label>
+                  <input value={firm} onChange={e => setFirm(e.target.value)} placeholder="e.g. Patel & Associates CA Firm"
+                    style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#0f172a', fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border 0.2s' }} onFocus={e => e.currentTarget.style.borderColor = '#4f46e5'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#a1a1aa', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Email</label>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 6 }}>EMAIL ADDRESS</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@firm.com"
-                style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#0f172a', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
             </div>
+
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#a1a1aa', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Password</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#64748b' }}>PASSWORD</label>
+                {mode === 'login' && <span style={{ fontSize: 12, color: '#4f46e5', fontWeight: 500, cursor: 'pointer' }}>Forgot?</span>}
+              </div>
               <div style={{ position: 'relative' }}>
-                <input type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder={mode === 'register' ? 'Min 8 characters' : 'Your password'}
-                  style={{ width: '100%', padding: '11px 42px 11px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-                <button onClick={() => setShowPwd(p => !p)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#71717a' }}>
+                <input type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder={mode === 'register' ? 'Min 8 characters' : '••••••••'}
+                  style={{ width: '100%', padding: '12px 42px 12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#0f172a', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                <button onClick={() => setShowPwd(p => !p)} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
                   {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
-            {mode === 'register' && (
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#a1a1aa', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Confirm Password</label>
-                <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="Repeat password"
-                  style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-              </div>
-            )}
-            {mode === 'register' && (
-              <div style={{ marginTop: 8 }}>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Beta Invite Code</label>
-                <input type="text" value={invite} onChange={e => setInvite(e.target.value)} placeholder="Enter your secret invite code"
-                  style={{ width: '100%', padding: '11px 14px', borderRadius: 10, border: '1px solid rgba(129,140,248,0.5)', background: 'rgba(129,140,248,0.1)', color: '#fafafa', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-              </div>
-            )}
+
+            <AnimatePresence>
+              {mode === 'register' && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 6 }}>CONFIRM PASSWORD</label>
+                    <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="Repeat password"
+                      style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#0f172a', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#4f46e5', marginBottom: 6 }}>BETA INVITE CODE</label>
+                    <input type="text" value={invite} onChange={e => setInvite(e.target.value)} placeholder="Enter secret beta invite code"
+                      style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(79,70,229,0.3)', background: 'rgba(79,70,229,0.03)', color: '#0f172a', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {error && (
-            <div style={{ marginTop: 16, padding: '10px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5', fontSize: 13 }}>
-              {error}
+            <div style={{ marginTop: 16, padding: '10px 14px', borderRadius: 10, background: '#fef2f2', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+               🚨 {error}
             </div>
           )}
 
-          <button onClick={handleSubmit} disabled={loading} className="btn-primary w-full mt-6 py-3 text-base flex items-center justify-center gap-2">
-            {loading ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Please wait…</> : mode === 'login' ? 'Sign In' : 'Create Account'}
+          <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderRadius: 14, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginTop: 24, boxShadow: '0 10px 25px -5px rgba(79, 70, 229, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            {loading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Processing…</> : mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
 
           {mode === 'register' && (
-            <p style={{ fontSize: 12, color: '#52525b', textAlign: 'center', marginTop: 16, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', marginTop: 16, lineHeight: 1.5 }}>
               By registering you agree to our Terms of Service.<br />14-day free trial · No credit card required.
             </p>
           )}
+
         </div>
+
+        {/* RIGHT SIDE: Visual Art Area mimicking graphics */}
+        <div style={{ flex: 1, background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          
+          {/* Internal blur shading background blobs */}
+          <div style={{ position: 'absolute', top: '10%', right: '10%', width: 220, height: 220, background: '#93c5fd', borderRadius: '50%', filter: 'blur(50px)', opacity: 0.4 }} />
+          <div style={{ position: 'absolute', bottom: '15%', left: '15%', width: 250, height: 250, background: '#c7d2fe', borderRadius: '50%', filter: 'blur(60px)', opacity: 0.5 }} />
+
+          {/* Main Floating Artwork frame */}
+          <motion.div 
+            style={{ width: '80%', height: '64%', background: '#ffffff', borderRadius: 20, boxShadow: '0 25px 60px -12px rgba(0,0,0,0.08)', padding: 24, border: '1px solid rgba(255,255,255,0.7)', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            {/* Topbar frame header */}
+            <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+               <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', opacity: 0.7 }} />
+               <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', opacity: 0.7 }} />
+               <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981', opacity: 0.7 }} />
+            </div>
+
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 24 }}>
+               {/* Large Pie Canvas Node */}
+               <motion.div 
+                 style={{ width: 140, height: 140, borderRadius: '50%', background: 'conic-gradient(#4f46e5 0% 65%, #818cf8 65% 85%, #c7d2fe 85% 100%)', boxShadow: '0 0 30px rgba(79,70,229,0.15)', position: 'relative' }}
+                 animate={{ rotate: [0, 5, -5, 0] }}
+                 transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+               >
+                 {/* Internal cutout to make it a donut chart */}
+                 <div style={{ position: 'absolute', top: '22%', left: '22%', width: '56%', height: '56%', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: 18, fontWeight: 800, color: '#4f46e5' }}>94%</span>
+                 </div>
+               </motion.div>
+
+               {/* Standard Bars Node supporting visuals */}
+               <div style={{ display: 'flex', alignItems: 'flex-end', gap: 14, height: 110, width: '100%', justifyContent: 'center', marginTop: 10 }}>
+                  <motion.div style={{ width: 28, background: '#4f46e5', borderRadius: '8px 8px 0 0', opacity: 0.9 }} animate={{ height: [50, 80, 50] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} />
+                  <motion.div style={{ width: 28, background: '#818cf8', borderRadius: '8px 8px 0 0', opacity: 0.9 }} animate={{ height: [90, 40, 90] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }} />
+                  <motion.div style={{ width: 28, background: '#c7d2fe', borderRadius: '8px 8px 0 0', opacity: 0.8 }} animate={{ height: [40, 110, 40] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 2 }} />
+                  <motion.div style={{ width: 28, background: '#e0e7ff', borderRadius: '8px 8px 0 0', opacity: 0.7 }} animate={{ height: [60, 30, 60] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 3 }} />
+               </div>
+
+               <div style={{ textAlign: 'center' }}>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: '#0f172a', margin: '0 0 4px' }}>Real-time reconciliation</p>
+                  <p style={{ fontSize: 11, color: '#64748b', margin: 0 }}>Processing thousands of invoices securely</p>
+               </div>
+            </div>
+
+          </motion.div>
+
+        </div>
+
       </div>
+
     </div>
   );
 }
