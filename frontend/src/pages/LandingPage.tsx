@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone, Clock, Brain, Search, Bell, Plus, Calendar, Wallet } from 'lucide-react';
+import { Shield, Zap, Users, FileCheck, TrendingUp, CheckCircle, ArrowRight, Star, Building2, Phone, Clock, Brain } from 'lucide-react';
 import DashboardMockup from '../components/DashboardMockup';
 
 interface Props { onGetStarted: () => void; }

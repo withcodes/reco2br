@@ -1,9 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Shield, Zap, Users, FileCheck, TrendingUp, Search, Bell, Plus, 
-  Wallet, Calendar, Clock, CheckCircle, Brain, ArrowRight 
-} from 'lucide-react';
+import { Shield, Zap, Users, FileCheck, TrendingUp, Search, Bell, Plus, CheckCircle } from 'lucide-react';
 
 export default function DashboardMockup() {
   return (
@@ -145,4 +141,4 @@ export default function DashboardMockup() {
     </motion.div>
   );
 }
-创新
+
