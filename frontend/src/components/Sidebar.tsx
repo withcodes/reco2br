@@ -8,7 +8,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const { isDark, toggleTheme } = useTheme();
   const { user, profile, signOut } = useAuth();
 
-  const firmName = profile?.firm_name || user?.email || 'Your Firm';
+  const firmName = profile?.firm_name || user?.user_metadata?.firm_name || 'Your Firm';
   const role     = profile?.role     || 'Admin';
   const initials = firmName.slice(0, 1).toUpperCase();
 

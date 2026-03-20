@@ -74,7 +74,7 @@ function App() {
   if (user) {
     const plan = profile?.plan || 'starter';
     const planMeta = PLAN_META[plan] || PLAN_META.starter;
-    const firmName = profile?.firm_name || 'Your Firm';
+    const firmName = profile?.firm_name || user?.user_metadata?.firm_name || 'Your Firm';
 
     const renderContent = () => {
       switch (activeTab) {
