@@ -80,9 +80,13 @@ export default function DashboardPage({ user, firmName, data, summary, monthly, 
         <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 6px', fontWeight: 500, letterSpacing: '0.5px' }}>{user.email} · FY 2025-26</p>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', margin: '0 0 12px', letterSpacing: '-0.8px' }}>Welcome back, {firmName} 👋</h1>
         <p style={{ fontSize: 14, color: '#64748b', margin: 0, maxWidth: 460, lineHeight: 1.6 }}>KnightOwl is ready to automate your GST reconciliation for today. Let's save some hours!</p>
-        <div style={{ position: 'absolute', right: 20, bottom: -15, width: 230, height: 230, zIndex: 1 }}>
+        <motion.div 
+          style={{ position: 'absolute', right: 20, bottom: -15, width: 230, height: 230, zIndex: 1 }}
+          animate={{ y: [0, -8, 0], rotate: [0, 1, -1, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+        >
           <img src="/cute_bear.png" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-        </div>
+        </motion.div>
       </div>
 
       <DashboardStats summary={summary} />
