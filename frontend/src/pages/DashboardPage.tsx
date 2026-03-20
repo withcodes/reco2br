@@ -4,6 +4,7 @@ import FileUploadArea from '../components/FileUploadArea';
 import MonthlyDeltaView, { type MonthlyDelta } from '../components/MonthlyDeltaView';
 import type { ReconciledItem, SummaryStats } from '../App';
 import type { User } from '@supabase/supabase-js';
+import { formatLakh } from '../utils/gst';
 
 interface DashboardPageProps {
   user: User;
@@ -79,7 +80,12 @@ export default function DashboardPage({ user, firmName, data, summary, monthly, 
       <div style={{ background: '#ffffff', borderRadius: 24, padding: '36px 44px', position: 'relative', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 24px rgba(0,0,0,0.02)', marginBottom: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 190 }}>
         <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 6px', fontWeight: 500, letterSpacing: '0.5px' }}>{user.email} · FY 2025-26</p>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', margin: '0 0 12px', letterSpacing: '-0.8px' }}>Welcome back, {firmName} 👋</h1>
-        <p style={{ fontSize: 14, color: '#64748b', margin: 0, maxWidth: 460, lineHeight: 1.6 }}>KnightOwl is ready to automate your GST reconciliation for today. Let's save some hours!</p>
+        <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 12px', maxWidth: 460, lineHeight: 1.6 }}>KnightOwl is ready to automate your GST reconciliation for today. Let's save some hours!</p>
+        {summary && summary.totalTaxSaved > 0 && (
+          <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 w-fit" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
+            <span className="text-sm">💰</span> Total ITC Saved: <span className="font-extrabold">{formatLakh(summary.totalTaxSaved)}</span>
+          </div>
+        )}
         <motion.div 
           style={{ position: 'absolute', right: 20, bottom: -15, width: 230, height: 230, zIndex: 1 }}
           animate={{ y: [0, -8, 0], rotate: [0, 1, -1, 0] }}
@@ -95,24 +101,26 @@ export default function DashboardPage({ user, firmName, data, summary, monthly, 
         <div className="lg:col-span-1 flex flex-col gap-6">
           <AnalyticsChart />
           <div className="glass-card p-6 h-full flex-1">
-            <h3 className="font-semibold text-base mb-4" style={{ color: 'var(--text-primary)' }}>Inspection Queue</h3>
+            <h3 className="font-semibold text-base mb-4" style={{ color: 'var(--text-primary)' }}>Actionable Queue</h3>
             <div className="space-y-3">
-              {[
-                { name: 'Last upload', status: data ? 'Completed' : 'No data', time: data ? 'Recent' : 'Upload files', errors: summary?.pendingInvoices || 0 },
-              ].filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-               .map((item, i) => (
-                <div key={i} onClick={() => setActiveTab('gstr2b')} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"
+              {(summary ? [
+                { text: `${summary.pendingInvoices || 0} Invoice discrepancies need review`, type: 'critical', action: 'gstr2b' },
+                { text: `₹${summary.itcAtRisk || 0} ITC at risk from mismatched entries`, type: 'warning', action: 'suppliers' }
+              ] : [
+                { text: `📥 No reconciliation dataset uploaded for FY 25-26`, type: 'info', action: 'gstr2b' }
+              ]).filter(a => a.text.toLowerCase().includes(searchQuery.toLowerCase()))
+               .map((a, i) => (
+                <div key={i} onClick={() => setActiveTab(a.action)} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"
                   style={{ background: 'var(--bg-hover)', border: '1px solid transparent' }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-glass)')}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}>
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item.name}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.time}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">
+                      {a.type === 'critical' ? '🚨' : a.type === 'warning' ? '⚠️' : '📥'}
+                    </span>
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{a.text}</p>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded-full font-medium"
-                    style={{ background: item.status === 'Completed' ? 'rgba(16,185,129,0.12)' : 'rgba(59,130,246,0.12)', color: item.status === 'Completed' ? '#10b981' : '#3b82f6' }}>
-                    {item.status}
-                  </span>
+                  <span className="text-[10px] px-2 py-1 rounded-full font-bold bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)]">Open</span>
                 </div>
               ))}
             </div>

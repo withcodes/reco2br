@@ -18,6 +18,24 @@ export function DashboardStats({ summary }: DashboardStatsProps) {
     { label: 'ITC Leakage Gap', value: isLoaded ? formatLakh(leakage) : '₹0', sub: isLoaded && leakage > 0 ? 'Unclaimed ITC!' : isLoaded ? 'No leakage' : 'Waiting…', positive: leakage === 0, icon: TrendingDown, kpi: leakage > 0 ? 'kpi-rose' : 'kpi-emerald', iconColor: leakage > 0 ? '#ef4444' : '#10b981' },
   ];
 
+  if (!isLoaded) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-7">
+        {[1,2,3,4,5].map(i => (
+          <div key={i} className="glass-card p-5 animate-pulse flex flex-col h-[130px]" style={{ background: 'var(--bg-hover)' }}>
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-[rgba(150,150,150,0.05)]" />
+              <div className="w-12 h-5 rounded-full bg-[rgba(150,150,150,0.05)]" />
+            </div>
+            <div className="w-20 h-3 rounded bg-[rgba(150,150,150,0.05)] mb-2" />
+            <div className="w-24 h-6 rounded bg-[rgba(150,150,150,0.05)] mb-1.5" />
+            <div className="w-16 h-2.5 rounded bg-[rgba(150,150,150,0.05)]" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-7">
       {stats.map((s, i) => (
