@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useAuth } from './context/AuthContext';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
+import DashboardPage from './pages/DashboardPage';
 import Sidebar from './components/Sidebar';
 import { DashboardStats } from './components/DashboardStats';
 import FileUploadArea from './components/FileUploadArea';
@@ -13,7 +14,7 @@ import DueDateCalendar from './components/DueDateCalendar';
 import NoticeTracker from './components/NoticeTracker';
 import Gstr3bDraft from './components/Gstr3bDraft';
 import TeamWorkflow from './components/TeamWorkflow';
-import { ToastContainer } from './components/Toast';
+import { ToastContainer, toast } from './components/Toast';
 import { Bell, Search, UserCircle, LogOut, Crown } from 'lucide-react';
 
 export type ReconciledItem = {
@@ -80,51 +81,16 @@ function App() {
       switch (activeTab) {
         case 'dashboard':
           return (
-            <>
-              <div style={{ background: '#ffffff', borderRadius: 24, padding: '36px 44px', position: 'relative', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 24px rgba(0,0,0,0.02)', marginBottom: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 190 }}>
-                <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 6px', fontWeight: 500, letterSpacing: '0.5px' }}>{user.email} · FY 2025-26</p>
-                <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', margin: '0 0 12px', letterSpacing: '-0.8px' }}>Welcome back, {firmName} 👋</h1>
-                <p style={{ fontSize: 14, color: '#64748b', margin: 0, maxWidth: 460, lineHeight: 1.6 }}>KnightOwl is ready to automate your GST reconciliation for today. Let's save some hours!</p>
-                {/* Floating Bear Illustration */}
-                <div style={{ position: 'absolute', right: 20, bottom: -15, width: 230, height: 230, zIndex: 1 }}>
-                  <img src="/cute_bear.png" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                </div>
-              </div>
-              <DashboardStats summary={summary} />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
-                <div className="lg:col-span-1">
-                  <div className="glass-card p-6 h-full">
-                    <h3 className="font-semibold text-base mb-4" style={{ color: 'var(--text-primary)' }}>Recent Reconciliations</h3>
-                    <div className="space-y-3">
-                      {[
-                        { name: 'Last upload', status: data ? 'Completed' : 'No data', time: data ? 'Recent' : 'Upload files', errors: summary?.pendingInvoices || 0 },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"
-                          style={{ background: 'var(--bg-hover)', border: '1px solid transparent' }}
-                          onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-glass)')}
-                          onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}>
-                          <div>
-                            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item.name}</p>
-                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.time}</p>
-                          </div>
-                          <span className="text-xs px-2 py-1 rounded-full font-medium"
-                            style={{ background: item.status === 'Completed' ? 'rgba(16,185,129,0.12)' : 'rgba(59,130,246,0.12)', color: item.status === 'Completed' ? '#10b981' : '#3b82f6' }}>
-                            {item.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <button onClick={() => setActiveTab('gstr2b')} className="btn-ghost btn-sm w-full mt-5 justify-center">
-                      Run Reconciliation →
-                    </button>
-                  </div>
-                </div>
-                <div className="lg:col-span-2">
-                  <FileUploadArea mode="gstr2b" onReconciliationComplete={handleReconciliationComplete} />
-                </div>
-              </div>
-              <MonthlyDeltaView data={monthly} onMonthClick={() => setActiveTab('monthly')} />
-            </>
+            <DashboardPage 
+              user={user} 
+              firmName={firmName} 
+              data={data} 
+              summary={summary} 
+              monthly={monthly} 
+              setActiveTab={setActiveTab} 
+              searchQuery={searchQuery}
+              handleReconciliationComplete={handleReconciliationComplete}
+            />
           );
         case 'gstr1':
           return (
@@ -207,7 +173,7 @@ function App() {
               <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input type="text" placeholder="Search GSTIN or client…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="field-input" style={{ paddingLeft: 32, paddingRight: 12, paddingTop: 7, paddingBottom: 7, fontSize: '0.8rem', width: 220 }} />
             </div>
-              <button style={{ padding: 7, borderRadius: 10, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
+              <button onClick={() => toast.info('No new notifications')} style={{ padding: 7, borderRadius: 10, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
                 <Bell size={18} style={{ color: 'var(--text-secondary)' }} />
               </button>
               <button onClick={() => setActiveTab('settings')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 12, background: 'var(--bg-hover)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
