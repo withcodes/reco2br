@@ -1,18 +1,19 @@
 import { motion } from 'framer-motion';
 import { DashboardStats } from '../components/DashboardStats';
 import FileUploadArea from '../components/FileUploadArea';
-import MonthlyDeltaView from '../components/MonthlyDeltaView';
-import { toast } from '../components/Toast';
+import MonthlyDeltaView, { type MonthlyDelta } from '../components/MonthlyDeltaView';
+import type { ReconciledItem, SummaryStats } from '../App';
+import type { User } from '@supabase/supabase-js';
 
 interface DashboardPageProps {
-  user: any;
+  user: User;
   firmName: string;
-  data: any[] | null;
-  summary: any | null;
-  monthly: any[] | null;
+  data: ReconciledItem[] | null;
+  summary: SummaryStats | null;
+  monthly: MonthlyDelta[] | null;
   setActiveTab: (tab: string) => void;
   searchQuery: string;
-  handleReconciliationComplete: (d: any[], s: any, m?: any[]) => void;
+  handleReconciliationComplete: (d: ReconciledItem[], s: SummaryStats, m?: MonthlyDelta[]) => void;
 }
 
 const AnalyticsChart = () => {
