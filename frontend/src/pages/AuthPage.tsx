@@ -151,6 +151,16 @@ export default function AuthPage({ onBack }: Props) {
         {/* RIGHT SIDE: Visual Art Area mimicking graphics */}
         <div style={{ flex: 1, background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
           
+          {/* SVG Dot Grid Matrix Backdrop overlay */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.8, pointerEvents: 'none' }}>
+            <defs>
+              <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.5" fill="#4f46e5" opacity="0.1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#dotGrid)" />
+          </svg>
+          
           {/* Internal blur shading background blobs */}
           <div style={{ position: 'absolute', top: '10%', right: '10%', width: 220, height: 220, background: '#93c5fd', borderRadius: '50%', filter: 'blur(50px)', opacity: 0.4 }} />
           <div style={{ position: 'absolute', bottom: '15%', left: '15%', width: 250, height: 250, background: '#c7d2fe', borderRadius: '50%', filter: 'blur(60px)', opacity: 0.5 }} />
