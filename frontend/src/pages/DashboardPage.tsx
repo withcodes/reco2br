@@ -11,7 +11,7 @@ interface DashboardPageProps {
   data: ReconciledItem[] | null;
   summary: SummaryStats | null;
   monthly: MonthlyDelta[] | null;
-  setActiveTab: (tab: string) => void;
+  setActiveTab: (tab: 'dashboard' | 'gstr1' | 'gstr2b' | 'monthly' | 'gstr3b' | 'clients' | 'team' | 'suppliers' | 'notices' | 'calendar' | 'settings') => void;
   searchQuery: string;
   handleReconciliationComplete: (d: ReconciledItem[], s: SummaryStats, m?: MonthlyDelta[]) => void;
 }
@@ -27,7 +27,7 @@ const AnalyticsChart = () => {
         <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>Historical Performance</p>
         <h3 className="text-2xl font-black mt-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>94.2% Match Rate</h3>
         <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-500 mt-1">
-          <svg size={12} fill="currentColor" viewBox="0 0 24 24" className="w-3 h-3"><path d="M7 14l5-5 5 5z"/></svg>
+          <svg fill="currentColor" viewBox="0 0 24 24" className="w-3 h-3"><path d="M7 14l5-5 5 5z"/></svg>
           +2.4% this month
         </span>
       </div>

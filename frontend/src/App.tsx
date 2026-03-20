@@ -4,7 +4,6 @@ import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import Sidebar from './components/Sidebar';
-import { DashboardStats } from './components/DashboardStats';
 import FileUploadArea from './components/FileUploadArea';
 import ReconciliationGrid from './components/ReconciliationGrid';
 import MonthlyDeltaView, { type MonthlyDelta } from './components/MonthlyDeltaView';
