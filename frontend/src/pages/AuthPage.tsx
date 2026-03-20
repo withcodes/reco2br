@@ -52,7 +52,8 @@ export default function AuthPage({ onBack }: Props) {
       <div style={{ width: '100%', maxWidth: 1020, height: 640, background: '#ffffff', borderRadius: 24, border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 50px 100px -20px rgba(0,0,0,0.12)', display: 'flex', overflow: 'hidden', position: 'relative', zIndex: 1 }}>
         
         {/* LEFT SIDE: Form */}
-        <div style={{ flex: 1, padding: '40px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
+        <div style={{ flex: 1, padding: '40px 60px', display: 'flex', flexDirection: 'column', position: 'relative', overflowY: 'auto' }}>
+          <div style={{ margin: 'auto 0', width: '100%', display: 'flex', flexDirection: 'column' }}>
           
           {/* Logo & Headline */}
           <div style={{ marginBottom: 36, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -144,7 +145,7 @@ export default function AuthPage({ onBack }: Props) {
               By registering you agree to our Terms of Service.<br />14-day free trial · No credit card required.
             </p>
           )}
-
+          </div>
         </div>
 
         {/* RIGHT SIDE: Visual Art Area mimicking graphics */}
