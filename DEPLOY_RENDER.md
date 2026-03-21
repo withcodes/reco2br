@@ -38,7 +38,7 @@ This guide will help you deploy your backend on **Render.com** and your frontend
 3.  Select your GitHub repository (`reco2br`).
 4.  **Configure Settings**:
     *   **Name**: *(Choose any name, e.g., `my-custom-backend`)*
-    *   **Root Directory**: Type **`backend`**
+    *   **Root Directory**: Type **`backend-python`**
     *   **Runtime**: Select **`Docker`**
 5.  Scroll down to **Environment Variables** and add these 3 items:
 
