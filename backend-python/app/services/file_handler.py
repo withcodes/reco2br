@@ -3,13 +3,10 @@ import pandas as pd
 import subprocess
 import os
 import tempfile
-import sys
+import sys 
 from fastapi import UploadFile, HTTPException
 from app.config import GSTR2B_PRIMARY_SHEET, PR_PRIMARY_SHEETS, JUNK_SHEETS
 
-async def convert_xls_to_xlsx(file_bytes: bytes) -> bytes:
-    """ Convert legacy .xls to .xlsx using a mock function """
-    return file_bytes
 
 def is_junk_sheet(df_sample: pd.DataFrame) -> bool:
     """ RULE 6: Junk sheet detection. Check if first 3 columns lack core GST keywords. """
@@ -31,13 +28,22 @@ def is_junk_sheet(df_sample: pd.DataFrame) -> bool:
 async def extract_sheet_data(file: UploadFile, is_gstr2b: bool) -> pd.DataFrame:
     content = await file.read()
     
-    if file.filename.endswith('.xls'):
-        content = await convert_xls_to_xlsx(content)
-        
+    fname = file.filename.lower().strip()
+
+    if fname.endswith('.xls') and not fname.endswith('.xlsx'):
+        engine = 'xlrd'
+    elif fname.endswith('.xlsx') or fname.endswith('.xlsm'):
+        engine = 'openpyxl'
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file format: {file.filename}. Please upload .xls or .xlsx files only."
+        )
+
     try:
-        xl = pd.ExcelFile(BytesIO(content), engine='openpyxl' if file.filename.endswith('xlsx') else None)
+        xl = pd.ExcelFile(BytesIO(content), engine=engine)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid Excel format: {e}")
+        raise HTTPException(status_code=400, detail=f"Cannot read Excel file '{file.filename}': {str(e)}")
         
     target_sheet = None
     

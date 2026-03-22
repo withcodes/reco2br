@@ -20,7 +20,7 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
         # Fallback to current date
         period_dt = datetime.now().replace(day=1)
         
-    cutoff_date = period_dt - timedelta(days=PRIOR_PERIOD_MAX_DAYS) # e.g. 45 days
+
     
     for item in results['missing_in_books']:
         rec = item['gstr_rec']
@@ -29,13 +29,19 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
         if rec.invoice_date:
             try:
                 inv_dt = datetime.strptime(rec.invoice_date, '%Y-%m-%d')
-                if inv_dt < cutoff_date:
+                if (inv_dt.year, inv_dt.month) < (period_dt.year, period_dt.month):
                      is_prior = True
             except:
                 pass
                 
         if is_prior:
             rec.category = 'Prior Period'
+            days_late = (period_dt - inv_dt).days
+            rec.warnings.append(
+                f"Invoice dated {rec.invoice_date} — "
+                f"appearing in {period} 2B. "
+                f"Supplier filed approximately {days_late} days late."
+            )
             prior_period.append(item)
         else:
             rec.category = 'Missing in Books'
@@ -59,6 +65,16 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
     total_2b_itc = sum(get_tax(item['gstr_rec']) for item in all_gstr_items)
 
     itc_leakage = sum(get_tax(item['pr_rec']) for item in results['missing_in_2b'])
+    # Calculate ITC that was matched but is ineligible (e.g. Ineligible category)
+    ineligible_itc = sum(
+        get_tax(item['gstr_rec'])
+        for item in matched_buckets
+        if 'ineligible' in str(item.get('pr_rec', {}).get('itc_availability', '') 
+                               if isinstance(item.get('pr_rec'), dict) 
+                               else getattr(item.get('pr_rec'), 'itc_availability', '')
+                               ).lower()
+    )
+
 
     summary = ReconciliationSummary(
         books_raw_rows=raw_pr_count,
@@ -77,7 +93,8 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
         total_tax_saved=total_tax_saved,
         total_tax_matched=total_tax_matched,
         total_2b_itc=total_2b_itc,
-        itc_leakage=itc_leakage
+        itc_leakage=itc_leakage,
+        itc_ineligible=ineligible_itc
     )
     
     res = ReconciliationResponse(

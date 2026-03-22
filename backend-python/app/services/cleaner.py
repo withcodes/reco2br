@@ -65,7 +65,7 @@ def clean_pr_data(df: pd.DataFrame) -> List[InvoiceRecord]:
             'rate': parse_amount(row.get('rate')),
             'source': 'books',
             'raw_row_numbers': [row.get('_raw_index')],
-            'itc_availability': row.get('eligibility for itc', ''),
+            'itc_availability': str(row.get('itc_availability', '')).strip(),
             '_group_key': f"{gstin}||{inv_norm}"
         }
         records.append(rec)

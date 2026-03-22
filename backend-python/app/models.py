@@ -46,6 +46,7 @@ class ReconciliationSummary(BaseModel):
     total_tax_matched: float = 0.0
     total_2b_itc: float = 0.0
     itc_leakage: float = 0.0
+    itc_ineligible: float = 0.0
 
 class ReconciliationResponse(BaseModel):
     status: str

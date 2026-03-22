@@ -158,6 +158,113 @@ def test_reconciliation_pipeline():
     print(f"Prior Period: {summary['prior_period_invoices']}")
     print(f"ITC at Risk: {summary['itc_at_risk']:.2f}")
 
+import pytest
+
+REAL_PR_PATH = os.path.join(
+    os.path.dirname(__file__), 'tests', 'data',
+    'LUCICHEM_BOOK_MAY_2025.XLS'
+)
+REAL_GSTR_PATH = os.path.join(
+    os.path.dirname(__file__), 'tests', 'data',
+    '052025_24AAFCL3021L1ZQ_GSTR2B_16072025.xlsx'
+)
+
+@pytest.mark.skipif(
+    not os.path.exists(REAL_PR_PATH),
+    reason="Real test files not in tests/data/ — skipping real-data test"
+)
+def test_real_lucichem_may_2025():
+    """
+    ACCEPTANCE TEST — the only proof the engine is correct.
+
+    These exact numbers were derived by manually reading every cell
+    of the real Lucichem May 2025 accountant files.
+    If any assertion fails, a real accounting bug exists.
+    Do not change these numbers — fix the engine instead.
+    """
+    with open(REAL_PR_PATH, 'rb') as f:
+        pr_bytes = f.read()
+    with open(REAL_GSTR_PATH, 'rb') as f:
+        gstr_bytes = f.read()
+
+    response = client.post(
+        '/api/reconcile',
+        data={'period': 'May 2025'},
+        files={
+            'prFile': (
+                'LUCICHEM_BOOK_MAY_2025.XLS',
+                pr_bytes,
+                'application/vnd.ms-excel'
+            ),
+            'gstr2bFile': (
+                '052025_24AAFCL3021L1ZQ_GSTR2B_16072025.xlsx',
+                gstr_bytes,
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+        }
+    )
+
+    assert response.status_code == 200, \
+        f"Engine returned {response.status_code}: {response.text[:500]}"
+
+    data = response.json()
+    s    = data['summary']
+
+    # ── Input data counts ─────────────────────────────────────────
+    assert s['books_raw_rows']        == 46, \
+        f"books_raw_rows: expected 46, got {s['books_raw_rows']}"
+    assert s['books_unique_invoices'] == 37, \
+        f"books_unique: expected 37 (after split-row aggregation), got {s['books_unique_invoices']}"
+    assert s['gstr2b_records']        == 55, \
+        f"gstr2b_records: expected 55, got {s['gstr2b_records']}"
+
+    # ── Matching results ──────────────────────────────────────────
+    total_matched = s['exact_match'] + s['matched_normalized']
+    assert total_matched              == 35, \
+        f"total matched: expected 35, got {total_matched}"
+    assert s['gstin_typo']            == 1, \
+        f"gstin_typo: expected 1 (Lifecom Pharma O vs 0), got {s['gstin_typo']}"
+    assert s['near_match']            == 1, \
+        f"near_match: expected 1 (HSS/OO31/2526 vs HSS/031/2025-26), got {s['near_match']}"
+    assert s['missing_in_books']      == 19, \
+        f"missing_in_books: expected 19, got {s['missing_in_books']}"
+    assert s['missing_in_2b']         == 0, \
+        f"missing_in_2b: expected 0, got {s['missing_in_2b']}"
+    assert s['prior_period_invoices'] == 1, \
+        f"prior_period: expected 1 (Medioint March invoice in May 2B), got {s['prior_period_invoices']}"
+    assert s['value_mismatch']        == 0, \
+        f"value_mismatch: expected 0, got {s['value_mismatch']}"
+    assert s['tax_mismatch']          == 0, \
+        f"tax_mismatch: expected 0, got {s['tax_mismatch']}"
+
+    # ── ITC numbers ───────────────────────────────────────────────
+    assert abs(s['itc_at_risk'] - 30625.28) < 1.0, \
+        f"itc_at_risk: expected ₹30625.28, got ₹{s['itc_at_risk']:.2f}"
+
+    # ── Specific case: GSTIN typo detail ─────────────────────────
+    typo_cases = data['gstin_typo_cases']
+    assert len(typo_cases) == 1, "Expected exactly 1 GSTIN typo case"
+    typo_pr   = typo_cases[0]['pr_rec']
+    typo_gstr = typo_cases[0]['gstr_rec']
+
+    pr_gstin   = typo_pr['gstin']   if isinstance(typo_pr,   dict) else typo_pr.gstin
+    gstr_gstin = typo_gstr['gstin'] if isinstance(typo_gstr, dict) else typo_gstr.gstin
+
+    assert 'AAACL8910B1Z' in pr_gstin, \
+        f"Wrong GSTIN typo case — PR GSTIN: {pr_gstin}"
+    assert pr_gstin != gstr_gstin, \
+        "GSTIN typo case: both GSTINs are identical — typo not detected"
+
+    # ── Specific case: prior period detail ───────────────────────
+    prior = data['prior_period']
+    assert len(prior) == 1, "Expected exactly 1 prior period invoice"
+    prior_rec = prior[0]['gstr_rec']
+    prior_gstin = prior_rec['gstin'] if isinstance(prior_rec, dict) else prior_rec.gstin
+    assert '23AANCM6521G1ZJ' in prior_gstin, \
+        f"Expected Medioint GSTIN in prior period, got {prior_gstin}"
+
+    print("\n[PASS] All 12 real-data assertions passed.")
+
 if __name__ == "__main__":
     test_reconciliation_pipeline()
     print("\n[OK] Verification Test Script Complete.")

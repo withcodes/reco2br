@@ -39,5 +39,14 @@ PR_COLUMNS = {
     'cgst': ['central tax paid', 'cgst'],
     'sgst': ['state/ut tax paid', 'sgst'],
     'cess': ['cess paid', 'cess'],
-    'rate': ['rate']
+    'rate': ['rate'],
+    'itc_availability': [
+        'eligibility for itc',
+        'itc eligibility',
+        'eligible',
+        'eligibility',
+        'availed',
+        'itc type',
+        'eligibility for input tax credit'
+    ]
 }
