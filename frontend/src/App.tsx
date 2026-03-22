@@ -46,13 +46,14 @@ function App() {
   const [data,    setData]    = useState<ReconciledItem[] | null>(null);
   const [summary, setSummary] = useState<SummaryStats | null>(null);
   const [monthly, setMonthly] = useState<MonthlyDelta[] | null>(null);
+  const [rawResponse, setRawResponse] = useState<any>(null);
 
   const handleVoucherSaved = useCallback((id: number) => {
     setData(prev => prev ? prev.map(r => r.id === id ? { ...r, status: 'Manual-Matched' } : r) : prev);
   }, []);
 
-  const handleReconciliationComplete = useCallback((d: ReconciledItem[], s: SummaryStats, m?: any[]) => {
-    setData(d); setSummary(s); setMonthly(m || null);
+  const handleReconciliationComplete = useCallback((d: ReconciledItem[], s: SummaryStats, rawResult: any) => {
+    setData(d); setSummary(s); setRawResponse(rawResult);
     setActiveTab('gstr2b');
   }, []);
 
@@ -109,7 +110,7 @@ function App() {
                 <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Compare Purchase Register (Tally) vs GSTR-2B available on Portal</p>
               </div>
               <FileUploadArea mode="gstr2b" onReconciliationComplete={handleReconciliationComplete} />
-              <ReconciliationGrid liveData={data} summary={summary} onVoucherSaved={handleVoucherSaved} globalSearch={searchQuery} />
+              <ReconciliationGrid liveData={data} summary={summary} rawResponse={rawResponse} onVoucherSaved={handleVoucherSaved} globalSearch={searchQuery} />
             </>
           );
         case 'monthly':

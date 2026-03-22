@@ -1,9 +1,8 @@
 from typing import List, Dict, Any
 from collections import defaultdict
-from Levenshtein import ratio
-import pandas as pd
 from app.models import InvoiceRecord
 from app.config import TOLERANCE_AMT
+from app.utils.normalizer import compute_similarity
 
 def calculate_tax(r: InvoiceRecord) -> float:
     return r.igst + r.cgst + r.sgst
@@ -27,7 +26,6 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
     }
 
     # Helper maps
-    gstr_by_id = {r.id: r for r in gstr_records}
     gstr_by_exact_key = defaultdict(list)
     gstr_by_invoice = defaultdict(list)
     gstr_by_gstin = defaultdict(list)
@@ -37,8 +35,8 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
         gstr_by_invoice[r.invoice_no].append(r)
         gstr_by_gstin[r.gstin].append(r)
 
-    # --- LEVEL 1: EXACT MATCH ---
-    still_unmatched_pr_l1 = []
+    # --- LEVEL 1 & 2: EXACT MATCH & NORMALIZED MATCH ---
+    still_unmatched_pr_l12 = []
     
     for pr in unmatched_pr:
         key = f"{pr.gstin}||{pr.invoice_no}"
@@ -51,22 +49,29 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
                 break
                 
         if matched_gstr:
-            pr.status = "Exact Match"
+            _pr_raw = str(pr.invoice_no_raw).upper().strip()
+            _gstr_raw = str(matched_gstr.invoice_no_raw).upper().strip()
+            
+            if _pr_raw == _gstr_raw:
+                pr.status = "Exact Match"
+                bucket = 'exact_match'
+            else:
+                pr.status = "Matched Normalized"
+                bucket = 'matched_normalized'
+                
             pr.gstrAmount = calculate_tax(matched_gstr)
             pr.prAmount = calculate_tax(pr)
-            results['exact_match'].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
+            results[bucket].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
         else:
-            still_unmatched_pr_l1.append(pr)
+            still_unmatched_pr_l12.append(pr)
 
-    # --- LEVEL 2: INVOICE NORMALIZED OR VALUE/TAX MISMATCH ---
-    still_unmatched_pr_l2 = []
-    
-    for pr in still_unmatched_pr_l1:
+    # --- VALUE OR TAX MISMATCH (Sub-level of Level 1/2) ---
+    still_unmatched_pr_mismatch = []
+    for pr in still_unmatched_pr_l12:
         key = f"{pr.gstin}||{pr.invoice_no}"
         candidates = gstr_by_exact_key.get(key, [])
         
-        # Check if it was just a value/tax mismatch
         matched_gstr = None
         mismatch_type = None
         for gstr in candidates:
@@ -90,22 +95,20 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
             results[mismatch_type].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
         else:
-            # Here we would do advanced invoice normalization logic 
-            # if we hadn't already aggressively normalized in normalizer.py
-            still_unmatched_pr_l2.append(pr)
+            still_unmatched_pr_mismatch.append(pr)
 
     # --- LEVEL 3: GSTIN TYPO ---
     still_unmatched_pr_l3 = []
     
-    for pr in still_unmatched_pr_l2:
+    for pr in still_unmatched_pr_mismatch:
         candidates = gstr_by_invoice.get(pr.invoice_no, [])
         matched_gstr = None
         
         for gstr in candidates:
             if gstr in unmatched_gstr and is_amount_match(calculate_tax(pr), calculate_tax(gstr)):
-                # Check Levenshtein distance on GSTIN
-                sim = ratio(pr.gstin, gstr.gstin)
-                if sim >= 0.85: # Approx 1-2 chars diff out of 15
+                # RapidFuzz similarity %
+                sim = compute_similarity(pr.gstin, gstr.gstin)
+                if sim >= 85.0: # Approx 1-2 chars diff out of 15
                     matched_gstr = gstr
                     break
                     
@@ -119,7 +122,6 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
         else:
             still_unmatched_pr_l3.append(pr)
 
-
     # --- LEVEL 4: NEAR MISS (INVOICE) ---
     still_unmatched_pr_l4 = []
     
@@ -129,8 +131,8 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
         
         for gstr in candidates:
             if gstr in unmatched_gstr and is_amount_match(calculate_tax(pr), calculate_tax(gstr)):
-                sim = ratio(pr.invoice_no, gstr.invoice_no)
-                if 0.70 <= sim <= 0.95:
+                sim = compute_similarity(pr.invoice_no_raw, gstr.invoice_no_raw)
+                if 70.0 <= sim <= 95.0:
                     matched_gstr = gstr
                     break
                     

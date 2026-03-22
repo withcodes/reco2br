@@ -1,29 +1,30 @@
 import os
 
 # Reconciliation rules
-TOLERANCE_AMT = 2.0
+TOLERANCE_AMT = 2.0  # ₹2 tolerance for rounded amounts
+
+# Rule 4: Prior Period cutoff days
 PRIOR_PERIOD_MAX_DAYS = 45
 
-# Sheet Detection
+# Sheet configurations
+JUNK_SHEETS = ['SHEET1', 'SHEET2', 'PIVOT TABEL', 'QUERY LIST WORK', 'HOLU DATA', 'SUMMARY', 'PIVOT', 'WORKING', 'INDEX', 'TOC', 'COVER', 'READ ME']
 GSTR2B_PRIMARY_SHEET = 'B2B'
-PR_PRIMARY_SHEETS = ['B2B', 'B2BUR', 'IMPG', 'IMPS', 'CDNR']
-JUNK_SHEETS = ['SHEET1', 'SHEET2', 'PIVOT TABEL', 'QUERY LIST WORK', 'HOLU DATA', 
-               'SUMMARY', 'PIVOT', 'WORKING', 'INDEX', 'TOC', 'COVER', 'READ ME']
+PR_PRIMARY_SHEETS = ['B2B', 'B2BUR', 'IMPS', 'IMPG', 'CDNR']
 
 # Common column name mappings 
 GSTR2B_COLUMNS = {
-    'gstin': ['gstin of supplier', 'gstin'],
-    'supplier': ['trade/legal name', 'supplier name'],
-    'invoice_no': ['invoice number', 'document number', 'note number'],
-    'invoice_type': ['invoice type'],
-    'invoice_date': ['invoice date', 'document date'],
-    'invoice_value': ['invoice value(₹)', 'invoice value'],
+    'gstin': ['gstin of supplier', 'gstin/uin', 'gstin'],
+    'supplier': ['trade/legal name', 'supplier name'], # Kept from original as it's not explicitly removed/changed in the provided snippet
+    'invoice_no': ['invoice number', 'document number', 'note number', 'invoice details invoice number'],
+    'invoice_type': ['invoice type', 'document type'],
+    'invoice_date': ['invoice date', 'document date', 'note date'],
+    'invoice_value': ['invoice value(₹)', 'invoice value', 'invoice value (₹)'],
     'taxable_value': ['taxable value (₹)', 'taxable value'],
-    'igst': ['integrated tax(₹)', 'integrated tax', 'igst'],
-    'cgst': ['central tax(₹)', 'central tax', 'cgst'],
-    'sgst': ['state/ut tax(₹)', 'state tax', 'sgst'],
-    'cess': ['cess(₹)', 'cess'],
-    'period': ['gstr-1/iff period', 'period'],
+    'igst': ['integrated tax(₹)', 'tax amount integrated tax(₹)', 'integrated tax (₹)'],
+    'cgst': ['central tax(₹)', 'central tax (₹)'],
+    'sgst': ['state/ut tax(₹)', 'state/ut tax (₹)'],
+    'cess': ['cess(₹)', 'cess'], # Kept from original as it's not explicitly removed/changed in the provided snippet
+    'period': ['gstr-1/iff/gstr-5 period', 'period'],
     'itc_availability': ['itc availability']
 }
 

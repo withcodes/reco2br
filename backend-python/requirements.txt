@@ -5,3 +5,5 @@ openpyxl==3.1.2
 python-multipart==0.0.9
 Levenshtein==0.25.0
 xlrd==2.0.1
+rapidfuzz==3.6.1
+python-dateutil==2.8.2

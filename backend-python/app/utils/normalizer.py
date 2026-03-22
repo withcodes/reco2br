@@ -1,6 +1,8 @@
 import re
 from datetime import datetime
 import pandas as pd
+from dateutil import parser as date_parser
+from rapidfuzz import fuzz
 
 def normalize_string(s: str | None) -> str:
     if pd.isna(s) or s is None:
@@ -17,16 +19,18 @@ def normalize_invoice(s: str | None) -> str:
     """
     CRITICAL RULE 3: Invoice Normalization
     - uppercase, strip spaces
-    - Remove colons, slashes, hyphens
-    - Strip year formats: 2025-26, 2526
-    - Strip leading zeros
+    - Remove colons, slashes, hyphens, extra spaces
+    - Remove leading zeros
     """
     if pd.isna(s) or s is None:
         return ""
-    cleaned = str(s).upper().replace('O', '0')
-    cleaned = re.sub(r'\b(20\d{2}(-\d{2})?)\b', '', cleaned)
-    cleaned = re.sub(r'\b(25\d{2})\b', '', cleaned)
-    cleaned = re.sub(r'[^A-Z0-9]', '', cleaned)
+        
+    cleaned = str(s).upper().strip()
+    # Handle pure float strings exported from excel (e.g. "12345.0" -> "12345")
+    if cleaned.endswith(".0"):
+        cleaned = cleaned[:-2]
+        
+    cleaned = re.sub(r'[:/\- ]', '', cleaned)
     return cleaned.lstrip('0')
 
 def parse_amount(val: any) -> float:
@@ -42,23 +46,32 @@ def parse_amount(val: any) -> float:
 
 def normalize_date(val: any) -> str:
     """ Parse excel serial date or string to YYYY-MM-DD """
-    if pd.isna(val) or val is None:
+    if pd.isna(val) or val is None or str(val).strip() == "":
         return ""
     
     if isinstance(val, datetime):
         return val.strftime('%Y-%m-%d')
         
     try:
-        # Check if it's an excel serial date
+        # Check if it's an excel serial date (float/int)
         serial = float(val)
+        # Note: pandas unit='D' origin='1899-12-30' is standard for Excel
         return pd.to_datetime(serial, unit='D', origin='1899-12-30').strftime('%Y-%m-%d')
-    except ValueError:
+    except (ValueError, TypeError):
         pass
         
     s = str(val).strip()
-    # Try parsing DD/MM/YYYY or DD-MM-YYYY
-    match = re.search(r'^(\d{2})[/\-](\d{2})[/\-](\d{4})$', s)
-    if match:
-        return f"{match.group(3)}-{match.group(2)}-{match.group(1)}"
-        
-    return s
+    
+    try:
+        # Use python-dateutil for robust parsing
+        # dayfirst=True because Indian dates are typically DD/MM/YYYY
+        dt = date_parser.parse(s, dayfirst=True)
+        return dt.strftime('%Y-%m-%d')
+    except (ValueError, TypeError, OverflowError):
+        return s
+
+def compute_similarity(s1: str, s2: str) -> float:
+    """ Computes similarity percentage between two strings using RapidFuzz """
+    if not s1 or not s2:
+        return 0.0
+    return fuzz.ratio(s1.upper(), s2.upper())

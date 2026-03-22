@@ -6,7 +6,7 @@ import { toast } from './Toast';
 
 interface FileUploadAreaProps {
   mode: 'gstr1' | 'gstr2b';
-  onReconciliationComplete: (data: ReconciledItem[], summary: SummaryStats, monthly?: any[]) => void;
+  onReconciliationComplete: (data: ReconciledItem[], summary: SummaryStats, rawBackendResponse: any) => void;
 }
 
 const CONFIG = {
@@ -49,8 +49,48 @@ export default function FileUploadArea({ mode, onReconciliationComplete }: FileU
       const res = await apiPost(cfg.endpoint, fd);
       if (!res.ok) throw new Error(await res.text());
       const result = await res.json();
-      onReconciliationComplete(result.data, result.summary, result.monthly);
-      toast.success(`✅ Reconciliation complete — ${result.data?.length ?? 0} invoices processed`);
+      
+      const allData: ReconciledItem[] = [];
+      const processCategory = (items: any[] | undefined, status: string, category: string) => {
+        if (!items) return;
+        items.forEach(item => {
+          const pr = item.pr_rec || item.gstr_rec || item;
+          const gstr = item.gstr_rec || item.pr_rec || item;
+          
+          allData.push({
+            id: pr.id || Math.random(),
+            vendor: pr.vendor_name || gstr.vendor_name || 'Unknown',
+            gstin: pr.gstin || gstr.gstin || '',
+            invoiceNo: pr.invoice_no_raw || gstr.invoice_no_raw || pr.invoice_no || '',
+            date: pr.invoice_date || gstr.invoice_date || '',
+            prAmount: pr.prAmount || pr.taxable_value || 0,
+            gstrAmount: gstr.gstrAmount || gstr.taxable_value || 0,
+            status: status,
+            category: pr.category || gstr.category || category,
+            _prRaw: item.pr_rec,
+            _gstrRaw: item.gstr_rec,
+          });
+        });
+      };
+
+      processCategory(result.matched, 'Exact Match', 'Exact Match');
+      processCategory(result.matched_normalized, 'Matched', 'Invoice Normalized');
+      processCategory(result.gstin_typo_cases, 'Fuzzy Match', 'GSTIN Typo');
+      processCategory(result.near_match_cases, 'Fuzzy Match', 'Near Match');
+      processCategory(result.mismatched, 'Amount Mismatch', 'Value/Tax Issue');
+      processCategory(result.missing_in_books, 'Missing in PR', 'Missing in Books');
+      processCategory(result.missing_in_2b, 'Missing in 2B', 'Missing in 2B');
+      processCategory(result.prior_period, 'Missing in PR', 'Prior Period');
+
+      const summaryStr = {
+        totalReconciled: result.summary?.books_unique_invoices || 0,
+        itcAtRisk: result.summary?.itc_at_risk || 0,
+        pendingInvoices: result.summary?.missing_in_books || 0,
+        totalTaxSaved: result.summary?.total_tax_saved || 0
+      };
+
+      onReconciliationComplete(allData, summaryStr, result);
+      toast.success(`✅ Reconciliation complete — ${allData.length} invoices processed`);
     } catch (e: any) {
       toast.error(e.message || 'Failed to process files. Ensure Excel format is correct.');
     } finally {

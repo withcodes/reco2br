@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
-from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil import parser as date_parser
 from app.models import ReconciliationResponse, ReconciliationSummary
 from app.config import PRIOR_PERIOD_MAX_DAYS
 
@@ -9,6 +10,18 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
     missing_in_books = []
     prior_period = []
     
+    # Try to parse period to get a baseline date (default to 1st of the month)
+    try:
+        # If period is "May 2025", this will parse to datetime(2025, 5, 1)
+        period_dt = date_parser.parse(period, default=datetime(datetime.now().year, datetime.now().month, 1))
+        # Ensure it's the first of the month
+        period_dt = period_dt.replace(day=1)
+    except:
+        # Fallback to current date
+        period_dt = datetime.now().replace(day=1)
+        
+    cutoff_date = period_dt - timedelta(days=PRIOR_PERIOD_MAX_DAYS) # e.g. 45 days
+    
     for item in results['missing_in_books']:
         rec = item['gstr_rec']
         is_prior = False
@@ -16,12 +29,7 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
         if rec.invoice_date:
             try:
                 inv_dt = datetime.strptime(rec.invoice_date, '%Y-%m-%d')
-                # A robust implementation would parse the 'period' string properly.
-                # Here we assume standard late filing checks for testing.
-                # If invoice date is before current year minus some period, it is flagged.
-                # For demo purposes, we will flag based on the config days if achievable safely,
-                # else rely on explicit month checking.
-                if inv_dt < datetime(2025, 4, 1): # Hardcoded for May 2025 example bounds
+                if inv_dt < cutoff_date:
                      is_prior = True
             except:
                 pass
@@ -30,6 +38,7 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
             rec.category = 'Prior Period'
             prior_period.append(item)
         else:
+            rec.category = 'Missing in Books'
             missing_in_books.append(item)
 
     results['missing_in_books'] = missing_in_books

@@ -73,11 +73,23 @@ async def api_reconcile(
 
 @app.post("/api/export")
 async def api_export(data: dict):
-    # Depending on frontend design, they might pass JSON summary back 
-    # OR we cache the last Reconciled Response model internally and fetch via Token.
-    # For a stateless API, passing back standard JSON enables quick exports.
-    pass
-
+    try:
+        # Parse incoming frontend raw json back into the Pydantic model
+        res_model = ReconciliationResponse(**data)
+        excel_bytes = generate_excel_report(res_model)
+        
+        from fastapi.responses import Response
+        return Response(
+            content=excel_bytes,
+            headers={
+                "Content-Disposition": "attachment; filename=GSTSync_Recon_Report.xlsx",
+                "Access-Control-Expose-Headers": "Content-Disposition"
+            },
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Export Failed: {str(e)}")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

@@ -55,17 +55,18 @@ def generate_excel_report(res: ReconciliationResponse) -> bytes:
             flat_data = []
             for item in data_list:
                 row = {}
-                # Flatten nested models (pr_rec / gstr_rec)
-                if isinstance(item, dict):
-                    if 'pr_rec' in item:
-                        for k,v in item['pr_rec'].model_dump().items():
-                            row[f"PR_{k}"] = v
-                    if 'gstr_rec' in item:
-                        for k,v in item['gstr_rec'].model_dump().items():
-                            row[f"2B_{k}"] = v
-                else: 
-                     # If flat model
-                     row = item.model_dump()
+                item_dict = item if isinstance(item, dict) else item.model_dump()
+                
+                if 'pr_rec' in item_dict and item_dict['pr_rec']:
+                    for k,v in item_dict['pr_rec'].items():
+                        row[f"PR_{k}"] = v
+                if 'gstr_rec' in item_dict and item_dict['gstr_rec']:
+                    for k,v in item_dict['gstr_rec'].items():
+                        row[f"2B_{k}"] = v
+                        
+                if 'pr_rec' not in item_dict and 'gstr_rec' not in item_dict:
+                     row = item_dict
+                
                 flat_data.append(row)
                 
             pd.DataFrame(flat_data).to_excel(writer, sheet_name=sheet_name, index=False)

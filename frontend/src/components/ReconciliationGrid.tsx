@@ -9,10 +9,10 @@ import { toast } from './Toast';
 interface ReconciliationGridProps {
   liveData: ReconciledItem[] | null;
   summary:  SummaryStats   | null;
+  rawResponse?: any;
   onVoucherSaved?: (id: number) => void;
   globalSearch?: string;
 }
-
 
 const PAGE_SIZE = 50;
 
@@ -25,7 +25,7 @@ const ACTION_META: Record<ActionStatus, { label: string; color: string; bg: stri
   'Pending': { label: 'Pending', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 };
 
-export default function ReconciliationGrid({ liveData, summary, onVoucherSaved, globalSearch }: ReconciliationGridProps) {
+export default function ReconciliationGrid({ liveData, summary, rawResponse, onVoucherSaved, globalSearch }: ReconciliationGridProps) {
   const [search,        setSearch]        = useState('');
   const [activeFilters, setActiveFilters] = useState<RecoStatus[]>([]);
   const [voucherRow,    setVoucherRow]    = useState<ReconciledItem | null>(null);
@@ -82,15 +82,15 @@ export default function ReconciliationGrid({ liveData, summary, onVoucherSaved, 
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
 
   const handleExport = async () => {
-    if (!liveData || !summary) return;
+    if (!rawResponse) return;
     setIsExporting(true);
     try {
-      const res = await apiPost('/api/export', { summary, data: liveData });
+      const res = await apiPost('/api/export', rawResponse);
       if (!res.ok) throw new Error('Export failed');
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href = url; a.download = `GSTSync_Recon_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.href = url; a.download = `GSTSync_Recon_Report_${new Date().toISOString().slice(0, 10)}.xlsx`;
       a.click(); URL.revokeObjectURL(url);
       toast.success('Reconciliation sheet exported successfully!');
     } catch { toast.error('Export failed — check backend connection.'); }
