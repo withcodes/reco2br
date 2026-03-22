@@ -25,7 +25,7 @@ const ACTION_META: Record<ActionStatus, { label: string; color: string; bg: stri
   'Pending': { label: 'Pending', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 };
 
-export default function ReconciliationGrid({ liveData, summary, rawResponse, onVoucherSaved, globalSearch }: ReconciliationGridProps) {
+export default function ReconciliationGrid({ liveData, rawResponse, onVoucherSaved, globalSearch }: ReconciliationGridProps) {
   const [search,        setSearch]        = useState('');
   const [activeFilters, setActiveFilters] = useState<RecoStatus[]>([]);
   const [voucherRow,    setVoucherRow]    = useState<ReconciledItem | null>(null);

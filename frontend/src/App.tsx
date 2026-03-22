@@ -45,7 +45,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [data,    setData]    = useState<ReconciledItem[] | null>(null);
   const [summary, setSummary] = useState<SummaryStats | null>(null);
-  const [monthly, setMonthly] = useState<MonthlyDelta[] | null>(null);
+  const [monthly] = useState<MonthlyDelta[] | null>(null);
   const [rawResponse, setRawResponse] = useState<any>(null);
 
   const handleVoucherSaved = useCallback((id: number) => {
