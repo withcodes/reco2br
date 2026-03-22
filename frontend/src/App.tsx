@@ -20,6 +20,7 @@ export type ReconciledItem = {
   id: number; vendor: string; gstin: string; invoiceNo: string; date: string;
   prAmount: number; gstrAmount: number; status: string; category?: string;
   prGstin?: string; gstrGstin?: string;
+  prInvoiceNo?: string; gstrInvoiceNo?: string;
   _prRaw?: any; _gstrRaw?: any;
 };
 export type SummaryStats = {

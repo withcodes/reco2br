@@ -205,7 +205,22 @@ export default function ReconciliationGrid({ liveData, rawResponse, onVoucherSav
                           <span>{row.gstin}</span>
                         )}
                       </td>
-                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{row.invoiceNo}</td>
+                      <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        {row.prInvoiceNo && row.gstrInvoiceNo && row.prInvoiceNo !== row.gstrInvoiceNo ? (
+                          <div className="flex flex-col gap-0.5" style={{ fontSize: '0.68rem' }}>
+                            <div className="flex items-center gap-1">
+                              <span style={{ color: '#818cf8', fontWeight: 600, width: 22 }}>PR:</span>
+                              <span style={{ color: 'var(--text-primary)' }}>{row.prInvoiceNo}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span style={{ color: '#f59e0b', fontWeight: 600, width: 22 }}>2B:</span>
+                              <span style={{ color: 'var(--text-primary)' }}>{row.gstrInvoiceNo} ⚠️</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span>{row.invoiceNo}</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>{row.date}</td>
                       <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--text-primary)' }}>{fmt(row.prAmount)}</td>
                       <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--text-primary)' }}>{fmt(row.gstrAmount)}</td>

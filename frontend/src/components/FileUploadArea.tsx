@@ -63,6 +63,8 @@ export default function FileUploadArea({ mode, onReconciliationComplete }: FileU
             gstin: pr.gstin || gstr.gstin || '',
             prGstin: item.pr_rec?.gstin || '',
             gstrGstin: item.gstr_rec?.gstin || '',
+            prInvoiceNo: item.pr_rec?.invoice_no_raw || '',
+            gstrInvoiceNo: item.gstr_rec?.invoice_no_raw || '',
             invoiceNo: pr.invoice_no_raw || gstr.invoice_no_raw || pr.invoice_no || '',
             date: pr.invoice_date || gstr.invoice_date || '',
             prAmount: pr.prAmount ?? 0,
