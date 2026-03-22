@@ -19,6 +19,7 @@ import { Bell, Search, UserCircle, LogOut, Crown } from 'lucide-react';
 export type ReconciledItem = {
   id: number; vendor: string; gstin: string; invoiceNo: string; date: string;
   prAmount: number; gstrAmount: number; status: string; category?: string;
+  prGstin?: string; gstrGstin?: string;
   _prRaw?: any; _gstrRaw?: any;
 };
 export type SummaryStats = {

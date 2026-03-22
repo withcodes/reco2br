@@ -61,6 +61,8 @@ export default function FileUploadArea({ mode, onReconciliationComplete }: FileU
             id: pr.id || Math.random(),
             vendor: pr.vendor_name || gstr.vendor_name || 'Unknown',
             gstin: pr.gstin || gstr.gstin || '',
+            prGstin: item.pr_rec?.gstin || '',
+            gstrGstin: item.gstr_rec?.gstin || '',
             invoiceNo: pr.invoice_no_raw || gstr.invoice_no_raw || pr.invoice_no || '',
             date: pr.invoice_date || gstr.invoice_date || '',
             prAmount: pr.prAmount ?? 0,

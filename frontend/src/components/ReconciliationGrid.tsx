@@ -189,7 +189,22 @@ export default function ReconciliationGrid({ liveData, rawResponse, onVoucherSav
                   <Fragment key={row.id}>
                     <tr className="tbl-row cursor-pointer" onClick={() => toggleRow(row.id)} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(row.id); } }}>
                       <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{row.vendor}</td>
-                      <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>{row.gstin}</td>
+                      <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        {row.prGstin && row.gstrGstin && row.prGstin !== row.gstrGstin ? (
+                          <div className="flex flex-col gap-0.5" style={{ fontSize: '0.68rem' }}>
+                            <div className="flex items-center gap-1">
+                              <span style={{ color: '#818cf8', fontWeight: 600, width: 22 }}>PR:</span>
+                              <span style={{ color: 'var(--text-primary)' }}>{row.prGstin}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span style={{ color: '#f59e0b', fontWeight: 600, width: 22 }}>2B:</span>
+                              <span style={{ color: 'var(--text-primary)' }}>{row.gstrGstin} ⚠️</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span>{row.gstin}</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{row.invoiceNo}</td>
                       <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>{row.date}</td>
                       <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--text-primary)' }}>{fmt(row.prAmount)}</td>
