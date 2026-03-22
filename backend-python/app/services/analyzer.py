@@ -43,9 +43,23 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
 
     results['missing_in_books'] = missing_in_books
 
-    itc_at_risk = sum(item['gstr_rec'].gstrAmount for item in results['missing_in_books'])
-    total_tax_saved = sum(item['gstr_rec'].gstrAmount for item in results['exact_match']) + sum(item['gstr_rec'].gstrAmount for item in results['matched_normalized'])
+    def get_tax(rec):
+        return (rec.igst or 0.0) + (rec.cgst or 0.0) + (rec.sgst or 0.0)
+
+    itc_at_risk = sum(get_tax(item['gstr_rec']) for item in results['missing_in_books'])
     
+    # Total tax matched includes exact, normalized, gstin typo, near match
+    matched_buckets = results['exact_match'] + results['matched_normalized'] + results['gstin_typo_cases'] + results['near_match_cases']
+    total_tax_matched = sum(get_tax(item['gstr_rec']) for item in matched_buckets)
+    
+    total_tax_saved = total_tax_matched # Symmetrical for mapping fallback
+    
+    # Total 2B is the sum of ALL invoices ever placed into a bucket with a gstr_rec
+    all_gstr_items = matched_buckets + results['value_mismatch'] + results['tax_mismatch'] + results['missing_in_books'] + prior_period
+    total_2b_itc = sum(get_tax(item['gstr_rec']) for item in all_gstr_items)
+
+    itc_leakage = sum(get_tax(item['pr_rec']) for item in results['missing_in_2b'])
+
     summary = ReconciliationSummary(
         books_raw_rows=raw_pr_count,
         books_unique_invoices=unique_pr_count,
@@ -60,7 +74,10 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
         missing_in_2b=len(results['missing_in_2b']),
         prior_period_invoices=len(prior_period),
         itc_at_risk=itc_at_risk,
-        total_tax_saved=total_tax_saved
+        total_tax_saved=total_tax_saved,
+        total_tax_matched=total_tax_matched,
+        total_2b_itc=total_2b_itc,
+        itc_leakage=itc_leakage
     )
     
     res = ReconciliationResponse(

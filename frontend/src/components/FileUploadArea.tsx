@@ -87,10 +87,11 @@ export default function FileUploadArea({ mode, onReconciliationComplete }: FileU
       processCategory(result.prior_period, 'Missing in PR', 'Prior Period');
 
       const summaryStr = {
-        totalReconciled: result.summary?.books_unique_invoices || 0,
+        totalReconciled: result.summary?.total_tax_matched || 0,
         itcAtRisk: result.summary?.itc_at_risk || 0,
         pendingInvoices: result.summary?.missing_in_books || 0,
-        totalTaxSaved: result.summary?.total_tax_saved || 0
+        totalTaxSaved: result.summary?.total_2b_itc || 0,
+        itcLeakage: { igst: result.summary?.itc_leakage || 0, cgst: 0, sgst: 0 }
       };
 
       onReconciliationComplete(allData, summaryStr, result);

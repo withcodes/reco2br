@@ -43,6 +43,9 @@ class ReconciliationSummary(BaseModel):
     prior_period_invoices: int = 0
     itc_at_risk: float = 0.0
     total_tax_saved: float = 0.0
+    total_tax_matched: float = 0.0
+    total_2b_itc: float = 0.0
+    itc_leakage: float = 0.0
 
 class ReconciliationResponse(BaseModel):
     status: str
