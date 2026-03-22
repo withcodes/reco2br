@@ -64,6 +64,9 @@ async def api_reconcile(
         
         return response
 
+    except ValueError as e:
+        # Validation Errors (e.g., column mapping failures)
+        raise HTTPException(status_code=400, detail=f"Data Validation Error: {str(e)}")
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Reconciliation Failed: {str(e)}")

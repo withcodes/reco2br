@@ -4,7 +4,7 @@ from app.models import InvoiceRecord
 from app.utils.normalizer import normalize_gstin, normalize_invoice, parse_amount, normalize_date
 from app.config import GSTR2B_COLUMNS, PR_COLUMNS
 
-def map_columns(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
+def map_columns(df: pd.DataFrame, mapping_dict: dict, required_fields=['gstin', 'invoice_no']) -> pd.DataFrame:
     """ Maps dynamic excel columns to standard schema fields """
     # Lowercase all actual columns for loose matching
     actual_cols = {str(col).lower().strip(): col for col in df.columns}
@@ -15,9 +15,17 @@ def map_columns(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
         if found_col:
             renames[found_col] = std_field
             
+    # Validate critical columns to prevent silent empty data loads
+    missing_critical = [f for f in required_fields if f not in renames.values()]
+    if missing_critical:
+        actual_heads = [str(c) for c in df.columns]
+        raise ValueError(
+            f"Unable to match column headers for: {', '.join(missing_critical)}. "
+            f"Expected synonyms like { {f: mapping_dict[f] for f in missing_critical} }. "
+            f"Found columns in file: {actual_heads}"
+        )
+
     # Keep only mapped columns + raw index
-    # print(f"DEBUG actual_cols: {actual_cols}")
-    # print(f"DEBUG renames: {renames}")
     df_mapped = df[list(renames.keys())].rename(columns=renames)
     df_mapped['_raw_index'] = df.index + 2 # Add 2 for actual excel row approximate (1-based + headers)
     return df_mapped
