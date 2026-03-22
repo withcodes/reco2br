@@ -59,8 +59,14 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
                 pr.status = "Matched Normalized"
                 bucket = 'matched_normalized'
                 
-            pr.gstrAmount = calculate_tax(matched_gstr)
-            pr.prAmount = calculate_tax(pr)
+            tax_gstr = calculate_tax(matched_gstr)
+            tax_pr = calculate_tax(pr)
+            
+            pr.gstrAmount = tax_gstr
+            pr.prAmount = tax_pr
+            matched_gstr.gstrAmount = tax_gstr
+            matched_gstr.prAmount = tax_pr
+            
             results[bucket].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
         else:
@@ -88,9 +94,14 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
                     break
 
         if matched_gstr:
+            tax_gstr = calculate_tax(matched_gstr)
+            tax_pr = calculate_tax(pr)
+            
             pr.status = "Tax Mismatch" if mismatch_type == 'tax_mismatch' else "Value Mismatch"
-            pr.gstrAmount = calculate_tax(matched_gstr)
-            pr.prAmount = calculate_tax(pr)
+            pr.gstrAmount = tax_gstr
+            pr.prAmount = tax_pr
+            matched_gstr.gstrAmount = tax_gstr
+            matched_gstr.prAmount = tax_pr
             pr.warnings.append(pr.status)
             results[mismatch_type].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
@@ -113,9 +124,14 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
                     break
                     
         if matched_gstr:
+            tax_gstr = calculate_tax(matched_gstr)
+            tax_pr = calculate_tax(pr)
+            
             pr.status = "Possible GSTIN Typo"
-            pr.gstrAmount = calculate_tax(matched_gstr)
-            pr.prAmount = calculate_tax(pr)
+            pr.gstrAmount = tax_gstr
+            pr.prAmount = tax_pr
+            matched_gstr.gstrAmount = tax_gstr
+            matched_gstr.prAmount = tax_pr
             pr.warnings.append(f"PR GSTIN: {pr.gstin} vs GSTR GSTIN: {matched_gstr.gstin}")
             results['gstin_typo_cases'].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
@@ -137,9 +153,14 @@ def match_invoices(pr_records: List[InvoiceRecord], gstr_records: List[InvoiceRe
                     break
                     
         if matched_gstr:
+            tax_gstr = calculate_tax(matched_gstr)
+            tax_pr = calculate_tax(pr)
+            
             pr.status = "Near Match"
-            pr.gstrAmount = calculate_tax(matched_gstr)
-            pr.prAmount = calculate_tax(pr)
+            pr.gstrAmount = tax_gstr
+            pr.prAmount = tax_pr
+            matched_gstr.gstrAmount = tax_gstr
+            matched_gstr.prAmount = tax_pr
             pr.warnings.append(f"PR Inv: {pr.invoice_no_raw} vs GSTR Inv: {matched_gstr.invoice_no_raw}")
             results['near_match_cases'].append({'pr_rec': pr, 'gstr_rec': matched_gstr})
             unmatched_gstr.remove(matched_gstr)
