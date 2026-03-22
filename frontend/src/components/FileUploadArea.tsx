@@ -57,14 +57,16 @@ export default function FileUploadArea({ mode, onReconciliationComplete }: FileU
           const pr = item.pr_rec || item.gstr_rec || item;
           const gstr = item.gstr_rec || item.pr_rec || item;
           
+          const getTax = (rec: any) => (rec.igst || 0) + (rec.cgst || 0) + (rec.sgst || 0);
+          
           allData.push({
             id: pr.id || Math.random(),
             vendor: pr.vendor_name || gstr.vendor_name || 'Unknown',
             gstin: pr.gstin || gstr.gstin || '',
             invoiceNo: pr.invoice_no_raw || gstr.invoice_no_raw || pr.invoice_no || '',
             date: pr.invoice_date || gstr.invoice_date || '',
-            prAmount: pr.prAmount || pr.taxable_value || 0,
-            gstrAmount: gstr.gstrAmount || gstr.taxable_value || 0,
+            prAmount: getTax(pr) || pr.taxable_value || 0,
+            gstrAmount: getTax(gstr) || gstr.taxable_value || 0,
             status: status,
             category: pr.category || gstr.category || category,
             _prRaw: item.pr_rec,
