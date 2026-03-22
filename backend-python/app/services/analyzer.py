@@ -25,7 +25,7 @@ def analyze_results(period: str, results: Dict[str, List[Any]], raw_pr_count: in
     for item in results['missing_in_books']:
         rec = item['gstr_rec']
         is_prior = False
-        
+        inv_dt = None
         if rec.invoice_date:
             try:
                 inv_dt = datetime.strptime(rec.invoice_date, '%Y-%m-%d')
