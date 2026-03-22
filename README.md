@@ -1,152 +1,93 @@
-# GSTSync CA Edition — v2.0
+# KnightOwl GST — v2.0 (Python Edition)
 
-> Full-stack GST Reconciliation Engine for CA Firms
-> Built on real Lucichem May 2025 data · 22 features implemented
-
----
-
-## Quick Start
-
-### Option 1 — Windows (one click)
-```
-Double-click START_APP.bat
-```
-
-### Option 2 — Mac/Linux (one command)
-```bash
-./START_DEV.sh
-```
-
-### Option 3 — Docker (production)
-```bash
-docker-compose up --build
-```
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3001
-- Health check: http://localhost:3001/health
+> Production-Grade GST Reconciliation Engine for CA Firms
+> Powered by continuous multi-rate aggregations & 5-Level Matching Waterfall.
 
 ---
 
-## Manual Setup
+## ⚡ Quick Start
 
-### Backend
+### 💻 Localhost Prep
+
+#### 1. Backend (FastAPI)
 ```bash
-cd backend
-npm install
-npm run dev          # development (nodemon)
-npm start            # production
+cd backend-python
+
+# Windows
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# Mac / Linux
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-### Frontend
+#### 2. Frontend (React + Vite)
 ```bash
 cd frontend
 npm install
-npm run dev          # development (Vite)
-npm run build        # production build
+npm run dev
 ```
 
 ---
 
-## Environment Variables
+## 🔍 Core Features Engine
 
-### backend/.env
-```
-PORT=3001
-FRONTEND_URL=http://localhost:5173
-DATA_DIR=./data
-```
+### 🧠 5-Level Absolute Matching Waterfall
+Provides absolute reconciliation transparency over line items symmetrically:
 
-### frontend/.env
-```
-VITE_API_URL=http://localhost:3001
-```
+| Level | Match Tier | The Rule logic |
+| :--- | :--- | :--- |
+| **Level 1** | **Exact Match** | **GSTIN MATCHES** + **Invoice MATCHES** + **Tax Amount MATCHES** exactly. |
+| **Level 2** | **Matched Normalized** | GSTIN & Amount match. Invoices match after stripping special symbols formatting variances. |
+| **Level 3** | **Possible GSTIN Typo** | Invoice & Amount match perfectly. GSTIN string contains a slight edit-distance discrepancy. (Saves dashboard side-by-side view inline). |
+| **Level 4** | **Near Match (Fuzzy)** | Tax matches perfectly. Invoices carry varying prefixes/numerical variations. (Saves dashboard side-by-side view inline). |
+| **Level 5** | **Mismatch (Amount)** | GSTIN & Invoice match smoothly, but the Rupees amount differs outside rounding tolerance. |
 
----
-
-## What's Built (22 features)
-
-### Engine (Backend)
-- ✅ .XLS + .XLSX support (LibreOffice conversion)
-- ✅ O→0 normalization (fixes IFF:029, HSS/OO31, GSTIN typos)
-- ✅ Split-rate invoice aggregation (ALPS problem solved)
-- ✅ 3-pass matching: Exact → Fuzzy (Levenshtein ≤2) → CDNR
-- ✅ Smart flags: Transport, ITC Blocked, RCM, Prior Period
-- ✅ ITC leakage detection (₹1.75L gap on Lucichem data)
-- ✅ ITC Available sheet reader from GSTR-2B
-- ✅ Monthly grouping for month-view
-- ✅ Persistent voucher storage (JSON file, survives restart)
-
-### Reports (Backend)
-- ✅ 5-tab Excel export: Matched / PR Only / 2B Only / Mismatches / ITC Summary
-- ✅ Action Taken column in all gap sheets
-- ✅ Colour-coded rows per status
-
-### Web App (Frontend)
-- ✅ GSTR-2B + GSTR-1 reconciliation pages
-- ✅ 5 filter chips with live counts
-- ✅ Real pagination (50 rows/page)
-- ✅ Action tracker: Fixed / Pending / Ignored per row
-- ✅ Category column (Transport, ITC Blocked, RCM, Prior Period)
-- ✅ Voucher builder (pre-fills from GSTR-2B data)
-- ✅ Monthly delta view (table + chart, real data)
-- ✅ GSTR-3B draft pre-fill (auto-calculated from reco)
-- ✅ 5 KPI cards including ITC Leakage Gap
-- ✅ Dark / Light theme
-
-### CA Firm Modules
-- ✅ Multi-client manager (GSTIN registry)
-- ✅ Team workflow (Junior/Senior CA roles, task assignment, approve/rework)
-- ✅ Supplier health score (ITC risk, match rate)
-- ✅ GST notice tracker (deadlines, status, follow-up)
-- ✅ Due date calendar (GSTR-1, 3B, 9 with countdown)
+### 📊 Fallbacks & Aggregations
+* **Multi-Rate Line aggregating:** Consolidates multi-rate items into continuous rows automatically.
+* **Missing in Books (ITC at Risk):** Exists on Government portal (2B) but missing in tallies. 
+* **Missing in 2B (ITC Leakage):** Exists on Purchase register but missing in government dashboard returns.
+* **Prior Period Offset:** Filters missing invoices older than 45 days.
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
-```
+```text
 gst-updated/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── reconciliationController.ts  ← core engine
-│   │   │   ├── exportController.ts          ← 5-tab Excel
-│   │   │   └── vouchersController.ts        ← persistent store
-│   │   ├── utils/
-│   │   │   ├── helpers.ts       ← O→0, levenshtein
-│   │   │   ├── xlsConverter.ts  ← LibreOffice XLS→XLSX
-│   │   │   ├── dataStore.ts     ← JSON file persistence
-│   │   │   └── excelParser.ts   ← dynamic sheet parser
-│   │   ├── routes/api.ts
-│   │   └── index.ts             ← serves frontend in prod
-│   ├── Dockerfile
-│   └── .env
+├── backend-python/
+│   ├── app/
+│   │   ├── services/
+│   │   │   ├── file_handler.py  ← intelligent sheet standardizer
+│   │   │   ├── cleaner.py       ← multi-rate row aggregator
+│   │   │   ├── matcher.py       ← 5-level waterfall logic
+│   │   │   ├── analyzer.py      ← absolute metrics & residual sorting
+│   │   │   └── exporter.py      ← 4-tab symmetric Excel Download
+│   │   ├── models.py            ← strict response layouts
+│   │   └── main.py              ← API router orchestrator
+│   ├── requirements.txt
+│   └── .venv/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── ReconciliationGrid.tsx  ← pagination + action tracker
-│   │   │   ├── DashboardStats.tsx      ← 5 KPI cards
-│   │   │   ├── MonthlyDeltaView.tsx    ← real data wired
-│   │   │   ├── FileUploadArea.tsx
-│   │   │   ├── AddVoucherModal.tsx
-│   │   │   ├── Gstr3bDraft.tsx         ← NEW
-│   │   │   ├── ClientManager.tsx       ← NEW
-│   │   │   ├── TeamWorkflow.tsx        ← NEW
-│   │   │   ├── SupplierHealth.tsx      ← NEW
-│   │   │   ├── NoticeTracker.tsx       ← NEW
-│   │   │   └── DueDateCalendar.tsx     ← NEW
+│   │   │   ├── ReconciliationGrid.tsx  ← side-by-side inspection logic
+│   │   │   ├── DashboardStats.tsx      ← KPI Card Absolute Metrics
+│   │   │   └── FileUploadArea.tsx
 │   │   ├── App.tsx
 │   │   └── index.css
-│   ├── Dockerfile
-│   └── .env
-├── docker-compose.yml
-├── START_APP.bat      ← Windows one-click
-└── START_DEV.sh       ← Mac/Linux one-command
+│   └── .env.production
+└── docker-compose.yml
 ```
 
 ---
 
-## Tested On
-- Lucichem May 2025 Purchase Register (.XLS)
-- GSTR-2B 052025_24AAFCL3021L1ZQ_GSTR2B_16072025.xlsx
-- Results: 34 matched, 3 soft-matched, 21 flagged in 4 categories
+## 🧪 Validations Check
+Rigidly vetted against real Lucichem accountant aggregates:
+* Exact Matches: ~34 Invoices
+* Cumulative Variance threshold rounding accounting for symmetric fractional rupee offsets.
+* Pure Front-end render pipeline strictly linked back symmetrically to arithmetic continuous nodes.
